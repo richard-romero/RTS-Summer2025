@@ -1,0 +1,37 @@
+# ninja log v6
+2	45	7681212034720838	flac-populate-prefix/src/flac-populate-stamp/flac-populate-mkdir	c36e0bfe5705f623
+2	45	7681212034720838	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-mkdir	c36e0bfe5705f623
+45	2507	7681212059345598	flac-populate-prefix/src/flac-populate-stamp/flac-populate-download	e349f25f150112a6
+45	2507	7681212059345598	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-download	e349f25f150112a6
+2	111	7681221033627930	flac-populate-prefix/src/flac-populate-stamp/flac-populate-update	8b4fab7cb8981c8d
+2	111	7681221033627930	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-update	8b4fab7cb8981c8d
+199	243	7681221036000085	flac-populate-prefix/src/flac-populate-stamp/flac-populate-build	18db98926f4f959b
+111	156	7681221035129295	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-patch	a59f6487e262b996
+111	156	7681221035129295	flac-populate-prefix/src/flac-populate-stamp/flac-populate-patch	a59f6487e262b996
+156	199	7681221035559690	flac-populate-prefix/src/flac-populate-stamp/flac-populate-configure	4bf13671651085e9
+156	199	7681221035559690	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-configure	4bf13671651085e9
+199	243	7681221036000085	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-build	18db98926f4f959b
+324	378	7681221037361332	flac-populate-prefix/src/flac-populate-stamp/flac-populate-done	24f5549a26c8130
+243	286	7681221036430478	flac-populate-prefix/src/flac-populate-stamp/flac-populate-install	6c2694e5dd987b1
+243	286	7681221036430478	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-install	6c2694e5dd987b1
+286	324	7681221036810823	flac-populate-prefix/src/flac-populate-stamp/flac-populate-test	1d112a3310127b36
+286	324	7681221036810823	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-test	1d112a3310127b36
+324	378	7681221037361332	CMakeFiles/flac-populate-complete	24f5549a26c8130
+324	378	7681221037361332	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/CMakeFiles/flac-populate-complete	24f5549a26c8130
+324	378	7681221037361332	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-done	24f5549a26c8130
+2	103	7681221743442479	flac-populate-prefix/src/flac-populate-stamp/flac-populate-update	8b4fab7cb8981c8d
+2	103	7681221743442479	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-update	8b4fab7cb8981c8d
+103	146	7681221744853762	flac-populate-prefix/src/flac-populate-stamp/flac-populate-patch	a59f6487e262b996
+103	146	7681221744853762	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-patch	a59f6487e262b996
+146	186	7681221745254126	flac-populate-prefix/src/flac-populate-stamp/flac-populate-configure	4bf13671651085e9
+146	186	7681221745254126	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-configure	4bf13671651085e9
+186	225	7681221745644481	flac-populate-prefix/src/flac-populate-stamp/flac-populate-build	18db98926f4f959b
+186	225	7681221745644481	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-build	18db98926f4f959b
+225	265	7681221746044845	flac-populate-prefix/src/flac-populate-stamp/flac-populate-install	6c2694e5dd987b1
+225	265	7681221746044845	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-install	6c2694e5dd987b1
+265	304	7681221746435200	flac-populate-prefix/src/flac-populate-stamp/flac-populate-test	1d112a3310127b36
+265	304	7681221746435200	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-test	1d112a3310127b36
+304	357	7681221746955673	CMakeFiles/flac-populate-complete	24f5549a26c8130
+304	357	7681221746955673	flac-populate-prefix/src/flac-populate-stamp/flac-populate-done	24f5549a26c8130
+304	357	7681221746955673	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/CMakeFiles/flac-populate-complete	24f5549a26c8130
+304	357	7681221746955673	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/flac-subbuild/flac-populate-prefix/src/flac-populate-stamp/flac-populate-done	24f5549a26c8130

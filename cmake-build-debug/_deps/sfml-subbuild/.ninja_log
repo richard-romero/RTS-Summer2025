@@ -1,0 +1,37 @@
+# ninja log v6
+1	46	7681211671204641	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-mkdir	4dd256777086bb6a
+1	46	7681211671204641	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-mkdir	4dd256777086bb6a
+46	17582	7681211846573814	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-download	9795c6d570826a05
+1	100	7681220958110867	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-update	709efe1e2a9f0b76
+46	17582	7681211846573814	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-download	9795c6d570826a05
+1	100	7681220958110867	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-update	709efe1e2a9f0b76
+101	139	7681220959462093	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-patch	776f30e9ff7bff19
+101	139	7681220959462093	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-patch	776f30e9ff7bff19
+218	259	7681220960653175	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-install	5307c7ea0402bfc7
+139	178	7681220959852454	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-configure	75456495c1f6e7dd
+139	178	7681220959852454	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-configure	75456495c1f6e7dd
+178	218	7681220960252809	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-build	7a0930a274706754
+178	218	7681220960252809	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-build	7a0930a274706754
+218	259	7681220960653175	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-install	5307c7ea0402bfc7
+259	298	7681220961053554	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-test	e62c40b240e8d956
+259	298	7681220961053554	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-test	e62c40b240e8d956
+298	352	7681220961594037	CMakeFiles/sfml-populate-complete	251b34a6178bcc91
+298	352	7681220961594037	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-done	251b34a6178bcc91
+298	352	7681220961594037	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/CMakeFiles/sfml-populate-complete	251b34a6178bcc91
+298	352	7681220961594037	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-done	251b34a6178bcc91
+2	105	7681221673924796	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-update	709efe1e2a9f0b76
+2	105	7681221673924796	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-update	709efe1e2a9f0b76
+105	146	7681221675336073	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-patch	776f30e9ff7bff19
+105	146	7681221675336073	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-patch	776f30e9ff7bff19
+146	186	7681221675746446	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-configure	75456495c1f6e7dd
+146	186	7681221675746446	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-configure	75456495c1f6e7dd
+186	225	7681221676136801	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-build	7a0930a274706754
+186	225	7681221676136801	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-build	7a0930a274706754
+226	265	7681221676527154	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-install	5307c7ea0402bfc7
+226	265	7681221676527154	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-install	5307c7ea0402bfc7
+265	303	7681221676915897	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-test	e62c40b240e8d956
+265	303	7681221676915897	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-test	e62c40b240e8d956
+303	358	7681221677466398	CMakeFiles/sfml-populate-complete	251b34a6178bcc91
+303	358	7681221677466398	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-done	251b34a6178bcc91
+303	358	7681221677466398	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/CMakeFiles/sfml-populate-complete	251b34a6178bcc91
+303	358	7681221677466398	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-done	251b34a6178bcc91

@@ -1,0 +1,37 @@
+# ninja log v6
+226	266	7681221081768278	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-install	718be247372fe07c
+2	43	7681212113226097	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-mkdir	7222eeeca7411f76
+2	43	7681212113226097	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-mkdir	7222eeeca7411f76
+144	184	7681221080937525	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-configure	ee0714a29b1fa5c5
+44	2278	7681212135572994	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-download	4af46d03f1fccf1
+102	144	7681221080547179	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-patch	cd5bd21154f3b2a3
+44	2278	7681212135572994	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-download	4af46d03f1fccf1
+1	101	7681221079145895	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-update	fc53ec3e81b889ad
+1	101	7681221079145895	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-update	fc53ec3e81b889ad
+102	144	7681221080547179	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-patch	cd5bd21154f3b2a3
+144	184	7681221080937525	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-configure	ee0714a29b1fa5c5
+184	226	7681221081367914	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-build	ae3704b0a13adce9
+184	226	7681221081367914	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-build	ae3704b0a13adce9
+226	266	7681221081768278	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-install	718be247372fe07c
+266	304	7681221082148624	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-test	9a59a9652bd1193f
+266	304	7681221082148624	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-test	9a59a9652bd1193f
+304	359	7681221082689119	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/CMakeFiles/vorbis-populate-complete	53b95ac1a0c61ff7
+304	359	7681221082689119	CMakeFiles/vorbis-populate-complete	53b95ac1a0c61ff7
+304	359	7681221082689119	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-done	53b95ac1a0c61ff7
+304	359	7681221082689119	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-done	53b95ac1a0c61ff7
+2	103	7681221794037767	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-update	fc53ec3e81b889ad
+2	103	7681221794037767	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-update	fc53ec3e81b889ad
+103	144	7681221795419022	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-patch	cd5bd21154f3b2a3
+103	144	7681221795419022	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-patch	cd5bd21154f3b2a3
+144	182	7681221795809376	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-configure	ee0714a29b1fa5c5
+144	182	7681221795809376	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-configure	ee0714a29b1fa5c5
+182	221	7681221796189735	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-build	ae3704b0a13adce9
+182	221	7681221796189735	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-build	ae3704b0a13adce9
+221	259	7681221796580079	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-install	718be247372fe07c
+221	259	7681221796580079	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-install	718be247372fe07c
+259	298	7681221796970431	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-test	9a59a9652bd1193f
+259	298	7681221796970431	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-test	9a59a9652bd1193f
+298	351	7681221797490904	CMakeFiles/vorbis-populate-complete	53b95ac1a0c61ff7
+298	351	7681221797490904	vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-done	53b95ac1a0c61ff7
+298	351	7681221797490904	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/CMakeFiles/vorbis-populate-complete	53b95ac1a0c61ff7
+298	351	7681221797490904	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/vorbis-subbuild/vorbis-populate-prefix/src/vorbis-populate-stamp/vorbis-populate-done	53b95ac1a0c61ff7

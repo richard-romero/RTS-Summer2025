@@ -1,0 +1,37 @@
+# ninja log v6
+1	43	7681211981822962	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-mkdir	c3a6cea4655c8e61
+43	1152	7681211992903397	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-download	d4a9bd6319f1a095
+1	43	7681211981822962	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-mkdir	c3a6cea4655c8e61
+43	1152	7681211992903397	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-download	d4a9bd6319f1a095
+1	100	7681220997435245	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-update	3c2c68027bccc78a
+1	100	7681220997435245	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-update	3c2c68027bccc78a
+100	140	7681220998796480	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-patch	64b4e93a022a5184
+100	140	7681220998796480	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-patch	64b4e93a022a5184
+140	179	7681220999186834	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-configure	39487bb65fcdd85a
+140	179	7681220999186834	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-configure	39487bb65fcdd85a
+179	218	7681220999577192	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-build	fbecaa92b978af25
+179	218	7681220999577192	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-build	fbecaa92b978af25
+218	257	7681220999957529	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-install	341bc1ac2619500b
+218	257	7681220999957529	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-install	341bc1ac2619500b
+257	294	7681221000337880	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-test	4a6ca80bcce8c8e6
+257	294	7681221000337880	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-test	4a6ca80bcce8c8e6
+295	348	7681221000878372	CMakeFiles/ogg-populate-complete	729525636cc25f78
+295	348	7681221000878372	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-done	729525636cc25f78
+295	348	7681221000878372	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/CMakeFiles/ogg-populate-complete	729525636cc25f78
+295	348	7681221000878372	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-done	729525636cc25f78
+1	101	7681221703405307	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-update	3c2c68027bccc78a
+1	101	7681221703405307	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-update	3c2c68027bccc78a
+101	141	7681221704766543	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-patch	64b4e93a022a5184
+101	141	7681221704766543	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-patch	64b4e93a022a5184
+141	179	7681221705156899	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-configure	39487bb65fcdd85a
+141	179	7681221705156899	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-configure	39487bb65fcdd85a
+179	218	7681221705537246	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-build	fbecaa92b978af25
+179	218	7681221705537246	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-build	fbecaa92b978af25
+218	256	7681221705927602	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-install	341bc1ac2619500b
+218	256	7681221705927602	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-install	341bc1ac2619500b
+256	298	7681221706341393	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-test	4a6ca80bcce8c8e6
+256	298	7681221706341393	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-test	4a6ca80bcce8c8e6
+298	349	7681221706861871	CMakeFiles/ogg-populate-complete	729525636cc25f78
+298	349	7681221706861871	ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-done	729525636cc25f78
+298	349	7681221706861871	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/CMakeFiles/ogg-populate-complete	729525636cc25f78
+298	349	7681221706861871	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/ogg-subbuild/ogg-populate-prefix/src/ogg-populate-stamp/ogg-populate-done	729525636cc25f78

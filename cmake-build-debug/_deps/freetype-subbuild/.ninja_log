@@ -1,0 +1,37 @@
+# ninja log v6
+1	42	7681211890413669	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-mkdir	cfbc4796ab62bbd2
+2	102	7681220991889884	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-update	5e6c6ac2f87cb9f4
+102	142	7681220993271141	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-patch	14edb04cb57c404e
+1	42	7681211890413669	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-mkdir	cfbc4796ab62bbd2
+42	8541	7681211975397125	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-download	5a22d69fcdc8cd24
+42	8541	7681211975397125	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-download	5a22d69fcdc8cd24
+2	102	7681220991889884	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-update	5e6c6ac2f87cb9f4
+102	142	7681220993271141	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-patch	14edb04cb57c404e
+142	181	7681220993651484	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-configure	5bfc5aa4cde718fc
+142	181	7681220993651484	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-configure	5bfc5aa4cde718fc
+181	224	7681220994081870	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-build	d416a0e0118155f1
+181	224	7681220994081870	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-build	d416a0e0118155f1
+225	267	7681220994512265	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-install	2bcaa238c912c721
+225	267	7681220994512265	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-install	2bcaa238c912c721
+308	360	7681220995443112	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/CMakeFiles/freetype-populate-complete	7b0f401846838eb9
+267	308	7681220994922635	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-test	1d7125163aba5b35
+267	308	7681220994922635	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-test	1d7125163aba5b35
+308	360	7681220995443112	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-done	7b0f401846838eb9
+308	360	7681220995443112	CMakeFiles/freetype-populate-complete	7b0f401846838eb9
+308	360	7681220995443112	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-done	7b0f401846838eb9
+1	102	7681221697890295	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-update	5e6c6ac2f87cb9f4
+1	102	7681221697890295	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-update	5e6c6ac2f87cb9f4
+102	142	7681221699281558	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-patch	14edb04cb57c404e
+102	142	7681221699281558	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-patch	14edb04cb57c404e
+142	183	7681221699681921	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-configure	5bfc5aa4cde718fc
+142	183	7681221699681921	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-configure	5bfc5aa4cde718fc
+183	225	7681221700102297	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-build	d416a0e0118155f1
+183	225	7681221700102297	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-build	d416a0e0118155f1
+225	268	7681221700522680	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-install	2bcaa238c912c721
+225	268	7681221700522680	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-install	2bcaa238c912c721
+268	308	7681221700933055	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-test	1d7125163aba5b35
+268	308	7681221700933055	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-test	1d7125163aba5b35
+308	362	7681221701473544	CMakeFiles/freetype-populate-complete	7b0f401846838eb9
+308	362	7681221701473544	freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-done	7b0f401846838eb9
+308	362	7681221701473544	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/CMakeFiles/freetype-populate-complete	7b0f401846838eb9
+308	362	7681221701473544	C:/Users/Richard Romero/projects/RTS-Summer2025/cmake-build-debug/_deps/freetype-subbuild/freetype-populate-prefix/src/freetype-populate-stamp/freetype-populate-done	7b0f401846838eb9
