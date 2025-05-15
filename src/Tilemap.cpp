@@ -57,3 +57,20 @@ void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
     // draw the vertex array
     target.draw(m_vertices, states);
 }
+
+void clampView(sf::View& view, sf::Vector2u mapSize, sf::Vector2u tileSize, sf::Vector2u windowSize)
+{
+    sf::Vector2f center = view.getCenter();
+    sf::Vector2f halfSize = view.getSize() / 2.f;
+
+    float minX = halfSize.x;
+    float maxX = mapSize.x * tileSize.x - halfSize.x;
+    float minY = halfSize.y;
+    float maxY = mapSize.y * tileSize.y - halfSize.y;
+
+    // Clamp center
+    center.x = std::clamp(center.x, minX, maxX);
+    center.y = std::clamp(center.y, minY, maxY);
+
+    view.setCenter(center);
+}

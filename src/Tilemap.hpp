@@ -1,3 +1,4 @@
+#pragma once
 #include <SFML/Graphics.hpp>
 
 class TileMap : public sf::Drawable, public sf::Transformable
@@ -11,3 +12,5 @@ private:
     sf::VertexArray m_vertices;
     sf::Texture     m_tileset;
 };
+
+void clampView(sf::View& view, sf::Vector2u mapSize, sf::Vector2u tileSize, sf::Vector2u windowSize);
