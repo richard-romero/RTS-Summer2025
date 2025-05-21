@@ -20,3 +20,5 @@ struct Building {
 void placeBuilding(BuildingType type, int tileX, int tileY, std::vector<Building>& buildings);
 
 sf::Sprite getBuildingSprite(BuildingType type, int tileSize = 16);
+
+sf::IntRect getBuildingTileRect(BuildingType type, int tileSize = 16);

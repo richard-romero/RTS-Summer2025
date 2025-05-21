@@ -27,18 +27,18 @@ void placeBuilding(BuildingType type, int tileX, int tileY,
 sf::Sprite getBuildingSprite(BuildingType type, int tileSize) {
     sf::Sprite icon(Building::tileset);
 
-    switch (type) {
-    case BuildingType::Barracks:
-        icon.setTextureRect(sf::IntRect({ 8 * tileSize, 0 * tileSize }, { tileSize, tileSize }));
-        break;
-    case BuildingType::Farm:
-        icon.setTextureRect(sf::IntRect({ 5 * tileSize, 2 * tileSize }, { tileSize, tileSize }));
-        break;
-    default:
-        icon.setTextureRect(sf::IntRect({ 0, 0 }, { 0, 0 })); // invalid
-        break;
-    }
+    icon.setTextureRect(getBuildingTileRect(type, tileSize));
 
     return icon;
 }
 
+sf::IntRect getBuildingTileRect(BuildingType type, int tileSize) {
+    switch (type) {
+    case BuildingType::Barracks:
+        return sf::IntRect({ 8 * tileSize, 0 * tileSize }, { tileSize, tileSize });
+    case BuildingType::Farm:
+        return sf::IntRect({ 5 * tileSize, 2 * tileSize }, { tileSize, tileSize });
+    default:
+        return sf::IntRect({ 0, 0 }, { 0, 0 }); // invalid
+    }
+}

@@ -53,6 +53,9 @@ int main()
         return -1;
     }
 
+    // hovering sprite
+    std::optional<sf::Sprite> ghostSprite;
+
     // run the main loop
     while (window.isOpen())
     {
@@ -83,12 +86,15 @@ int main()
                 }
             }
 
-            if (event->is<sf::Event::MouseButtonPressed>()) {
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
                 sf::Vector2i mouse = sf::Mouse::getPosition(window);
                 sf::Vector2f mouseF = window.mapPixelToCoords(mouse);
 
                 if (barracksIcon.getGlobalBounds().contains(mouseF)) {
                     selectedBuilding = BuildingType::Barracks;
+                    ghostSprite.emplace(Building::tileset);
+                    ghostSprite->setTextureRect(getBuildingTileRect(selectedBuilding));
+                    ghostSprite->setColor(sf::Color(255, 255, 255, 128));
                 }
 
                 if (selectedBuilding != BuildingType::None &&
@@ -99,12 +105,15 @@ int main()
                     // Snap to tile grid
                     int tileX = static_cast<int>(std::floor(worldPos.x / 16.f));
                     int tileY = static_cast<int>(std::floor(worldPos.y / 16.f));
-                    std::cout << "worldPos: (" << worldPos.x << ", " << worldPos.y << ")\n";
-                    std::cout << "tileX: " << tileX << ", tileY: " << tileY << "\n";
 
-                    // Place your building here — e.g., update tilemap or spawn building sprite
-                    placeBuilding(selectedBuilding, tileX, tileY, placedBuildings);
+                    if (!map.isOccupied(tileX, tileY)) {
+                        // Place your building here — e.g. spawn building sprite
+                        std::cout << "not occupied\n";
+                        placeBuilding(selectedBuilding, tileX, tileY, placedBuildings);
+                        map.markOccupied(tileX, tileY);
+                    }
 
+                    ghostSprite.reset();
                     selectedBuilding = BuildingType::None; // reset selection
                 }
             }
@@ -131,17 +140,26 @@ int main()
         worldView.move(offset);
         clampView(worldView, { 100, 100 }, { 16, 16 }, window.getSize());
         
+        if (ghostSprite && selectedBuilding != BuildingType::None) {
+            sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+            sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos, worldView); // use current world view
 
+            int tileX = static_cast<int>(std::floor(worldPos.x / 16.f));
+            int tileY = static_cast<int>(std::floor(worldPos.y / 16.f));
 
-        
+            ghostSprite->setPosition({ tileX * 16.f, tileY * 16.f });
+        }        
 
         // draw the map
         window.clear();
         window.setView(worldView);
         window.draw(map);
+
         for (const auto& building : placedBuildings)
             window.draw(building.sprite);
 
+        if (ghostSprite)
+            window.draw(*ghostSprite);
 
         window.setView(window.getDefaultView());
         window.draw(uiPanel);

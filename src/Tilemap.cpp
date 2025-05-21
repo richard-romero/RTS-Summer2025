@@ -74,3 +74,11 @@ void clampView(sf::View& view, sf::Vector2u mapSize, sf::Vector2u tileSize, sf::
 
     view.setCenter(center);
 }
+
+bool TileMap::isOccupied(int x, int y) const {
+    return occupied[y][x];
+}
+
+void TileMap::markOccupied(int x, int y) {
+    occupied[y][x] = true;
+}
