@@ -15,5 +15,5 @@ private:
     sf::Texture     m_tileset;
     bool occupied[100][100] = {};
 };
-
+ 
 void clampView(sf::View& view, sf::Vector2u mapSize, sf::Vector2u tileSize, sf::Vector2u windowSize);
