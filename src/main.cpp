@@ -1,7 +1,9 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <chrono> 
 #include "Tilemap.hpp"
 #include "Building.hpp"
+#include "Unit.hpp"
 
 int main()
 {
@@ -53,8 +55,17 @@ int main()
         return -1;
     }
 
+    // track units and if they are selected
+    std::vector<Unit> units;
+    int selectedUnitIndex = -1; // none selected
+
     // hovering sprite
     std::optional<sf::Sprite> ghostSprite;
+
+    // keep track of game time
+    using clock = std::chrono::high_resolution_clock;
+    auto lastFrameTime = clock::now();
+
 
     // run the main loop
     while (window.isOpen())
@@ -88,9 +99,9 @@ int main()
 
             if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
                 sf::Vector2i mouse = sf::Mouse::getPosition(window);
-                sf::Vector2f mouseF = window.mapPixelToCoords(mouse);
+                sf::Vector2f worldPos = window.mapPixelToCoords(mouse);
 
-                if (barracksIcon.getGlobalBounds().contains(mouseF)) {
+                if (barracksIcon.getGlobalBounds().contains(worldPos)) {
                     selectedBuilding = BuildingType::Barracks;
                     ghostSprite.emplace(Building::tileset);
                     ghostSprite->setTextureRect(getBuildingTileRect(selectedBuilding));
@@ -108,13 +119,52 @@ int main()
 
                     if (!map.isOccupied(tileX, tileY)) {
                         // Place your building here — e.g. spawn building sprite
-                        std::cout << "not occupied\n";
                         placeBuilding(selectedBuilding, tileX, tileY, placedBuildings);
                         map.markOccupied(tileX, tileY);
                     }
 
                     ghostSprite.reset();
                     selectedBuilding = BuildingType::None; // reset selection
+                }
+
+                for (int i = 0; i < units.size(); ++i) {
+                    if (units[i].sprite.getGlobalBounds().contains(worldPos)) {
+                        selectedUnitIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
+                if (selectedUnitIndex >= 0 && selectedUnitIndex < units.size()) {
+                    sf::Vector2i mousePixelPos = sf::Mouse::getPosition(window);
+                    sf::Vector2f worldPos = window.mapPixelToCoords(mousePixelPos, worldView);
+                    sf::Vector2i targetTile = {
+                        static_cast<int>(worldPos.x) / tileSize,
+                        static_cast<int>(worldPos.y) / tileSize,
+                    };
+
+                    units[selectedUnitIndex].targetTile = targetTile;
+                }
+            }
+
+            auto now = clock::now();
+            std::chrono::duration<float> elapsed = now - lastFrameTime;
+            float dt = elapsed.count();
+            lastFrameTime = now;
+
+            for (auto& building : placedBuildings) {
+                if (building.type != BuildingType::Barracks) continue;
+
+                if (!building.buildQueue.empty()) {
+                    auto& task = building.buildQueue.front();
+                    task.timeRemaining -= dt;
+                    if (task.timeRemaining <= 0.f) {
+                        // spawn unit
+                        Unit newUnit(UnitType::Farmer, Building::tileset, building.tilePosition);
+                        units.push_back(newUnit);
+                        building.buildQueue.pop();
+                    }
                 }
             }
 

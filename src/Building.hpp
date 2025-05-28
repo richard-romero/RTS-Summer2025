@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <queue>
+#include "Unit.hpp"
 
 enum class BuildingType {
 	None,
@@ -14,6 +16,13 @@ struct Building {
 	sf::Sprite sprite;
 	sf::Vector2i tilePosition;
 
+	struct UnitBuildTask {
+		float timeRemaining;
+		UnitType unitType;
+	};
+
+	std::queue<UnitBuildTask> buildQueue;
+	float buildTimer = 0.f;
 	static bool loadTexture(const std::string& path);
 };
 
