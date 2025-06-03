@@ -32,6 +32,22 @@ int main()
     uiPanel.setPosition({ window.getSize().x / 2.f, window.getSize().y - 150.f });
     uiPanel.setFillColor(sf::Color(50, 50, 50, 200)); // semi-transparent gray
 
+    // create ui button for barracks
+    sf::RectangleShape trainButton({ 120.f, 30.f });
+    trainButton.setPosition({ 20.f, window.getSize().y - 50.f });
+    trainButton.setFillColor(sf::Color::Blue);
+
+    sf::Font font;
+    if (!font.openFromFile("font.ttf")) {
+        std::cerr << "Font not present\n";
+        return -1;
+    }
+
+    sf::Text trainText(font, "Train Farmer", 16);
+    trainText.setPosition({ trainButton.getPosition().x + 5, trainButton.getPosition().y + 5 });
+    trainText.setFillColor(sf::Color::White);
+
+
     // create barracks icon
     sf::Texture barracksTexture("tilemap_packed.png");
     sf::Sprite barracksIcon(barracksTexture);
@@ -55,9 +71,10 @@ int main()
         return -1;
     }
 
-    // track units and if they are selected
+    // track units and buildings and if they are selected
     std::vector<Unit> units;
     int selectedUnitIndex = -1; // none selected
+    int selectedBuildingIndex = -1;
 
     // hovering sprite
     std::optional<sf::Sprite> ghostSprite;
@@ -97,54 +114,80 @@ int main()
                 }
             }
 
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-                sf::Vector2i mouse = sf::Mouse::getPosition(window);
-                sf::Vector2f worldPos = window.mapPixelToCoords(mouse);
+            if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
+                if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
 
-                if (barracksIcon.getGlobalBounds().contains(worldPos)) {
-                    selectedBuilding = BuildingType::Barracks;
-                    ghostSprite.emplace(Building::tileset);
-                    ghostSprite->setTextureRect(getBuildingTileRect(selectedBuilding));
-                    ghostSprite->setColor(sf::Color(255, 255, 255, 128));
-                }
+                    // get pointer position
+                    sf::Vector2i mouse = sf::Mouse::getPosition(window);
+                    sf::Vector2f uiPos = window.mapPixelToCoords(mouse);
+                    sf::Vector2f worldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window), worldView);
 
-                if (selectedBuilding != BuildingType::None &&
-                    mouse.y < window.getSize().y - 150) {
 
-                    sf::Vector2f worldPos = window.mapPixelToCoords(mouse, worldView);
-
-                    // Snap to tile grid
-                    int tileX = static_cast<int>(std::floor(worldPos.x / 16.f));
-                    int tileY = static_cast<int>(std::floor(worldPos.y / 16.f));
-
-                    if (!map.isOccupied(tileX, tileY)) {
-                        // Place your building here — e.g. spawn building sprite
-                        placeBuilding(selectedBuilding, tileX, tileY, placedBuildings);
-                        map.markOccupied(tileX, tileY);
+                    // select buildings
+                    if (!ghostSprite) {
+                        selectedBuildingIndex = -1;
+                        std::cout << placedBuildings.size();
+                        for (size_t i = 0; i < placedBuildings.size(); ++i) {
+                            if (placedBuildings[i].sprite.getGlobalBounds().contains(worldPos)) {
+                                if (placedBuildings[i].type == BuildingType::Barracks) {
+                                    selectedBuildingIndex = static_cast<int>(i);
+                                }
+                                break;
+                            }
+                        }
                     }
 
-                    ghostSprite.reset();
-                    selectedBuilding = BuildingType::None; // reset selection
-                }
+                    // ui building interaction
+                    if (barracksIcon.getGlobalBounds().contains(uiPos)) {
+                        selectedBuilding = BuildingType::Barracks;
+                        ghostSprite.emplace(Building::tileset);
+                        ghostSprite->setTextureRect(getBuildingTileRect(selectedBuilding));
+                        ghostSprite->setColor(sf::Color(255, 255, 255, 128));
+                    }
 
-                for (int i = 0; i < units.size(); ++i) {
-                    if (units[i].sprite.getGlobalBounds().contains(worldPos)) {
-                        selectedUnitIndex = i;
-                        break;
+                    // building placement
+                    if (selectedBuilding != BuildingType::None &&
+                        mouse.y < window.getSize().y - 150) {
+
+                        sf::Vector2f worldPos = window.mapPixelToCoords(mouse, worldView);
+
+                        // Snap to tile grid
+                        int tileX = static_cast<int>(std::floor(worldPos.x / 16.f));
+                        int tileY = static_cast<int>(std::floor(worldPos.y / 16.f));
+
+                        if (!map.isOccupied(tileX, tileY)) {
+                            // Place your building here — e.g. spawn building sprite
+                            placeBuilding(selectedBuilding, tileX, tileY, placedBuildings);
+                            map.markOccupied(tileX, tileY);
+                        }
+
+                        ghostSprite.reset();
+                        selectedBuilding = BuildingType::None; // reset selection
+                        continue;
+                    }
+
+                    // unit selection for movement
+                    for (int i = 0; i < units.size(); ++i) {
+                        if (units[i].sprite.getGlobalBounds().contains(worldPos)) {
+                            selectedUnitIndex = i;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
-                if (selectedUnitIndex >= 0 && selectedUnitIndex < units.size()) {
-                    sf::Vector2i mousePixelPos = sf::Mouse::getPosition(window);
-                    sf::Vector2f worldPos = window.mapPixelToCoords(mousePixelPos, worldView);
-                    sf::Vector2i targetTile = {
-                        static_cast<int>(worldPos.x) / tileSize,
-                        static_cast<int>(worldPos.y) / tileSize,
-                    };
+                if (mouseButtonPressed->button == sf::Mouse::Button::Right) {
 
-                    units[selectedUnitIndex].targetTile = targetTile;
+                    // unit movement
+                    if (selectedUnitIndex >= 0 && selectedUnitIndex < units.size()) {
+                        sf::Vector2i mousePixelPos = sf::Mouse::getPosition(window);
+                        sf::Vector2f worldPos = window.mapPixelToCoords(mousePixelPos, worldView);
+                        sf::Vector2i targetTile = {
+                            static_cast<int>(worldPos.x) / tileSize,
+                            static_cast<int>(worldPos.y) / tileSize,
+                        };
+
+                        units[selectedUnitIndex].targetTile = targetTile;
+                    }
                 }
             }
 
@@ -167,7 +210,6 @@ int main()
                     }
                 }
             }
-
             
         }
 
@@ -212,6 +254,14 @@ int main()
             window.draw(*ghostSprite);
 
         window.setView(window.getDefaultView());
+
+        // barracks menu
+        if (selectedBuildingIndex != -1 && placedBuildings[selectedBuildingIndex].type == BuildingType::Barracks &&
+            !ghostSprite) {
+            window.draw(trainButton);
+            window.draw(trainText);
+        }
+
         window.draw(uiPanel);
         window.draw(barracksIcon);
         window.display();

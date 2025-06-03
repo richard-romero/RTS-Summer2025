@@ -12,16 +12,8 @@ void placeBuilding(BuildingType type, int tileX, int tileY,
 {
     if (type == BuildingType::None) return;
 
-    float tileSize = 16.f;
-    sf::Sprite sprite = getBuildingSprite(type);
-    if (sprite.getTextureRect().position.x == 0 && sprite.getTextureRect().position.y == 0) {
-        std::cout << "here" << std::endl;
-        return;
-    }
-
-    sprite.setPosition({ tileX * tileSize, tileY * tileSize });
-
-    buildings.push_back(Building{ type, sprite, {tileX, tileY} });
+    Building building(type, { tileX, tileY });
+    buildings.push_back(building);
 }
 
 sf::Sprite getBuildingSprite(BuildingType type, int tileSize) {
