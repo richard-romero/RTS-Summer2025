@@ -3,6 +3,14 @@
 
 sf::Texture Building::tileset;
 
+
+Building::Building(BuildingType type, sf::Vector2i startTile)
+    : tilePosition(startTile), type(type), sprite(Building::tileset)
+{
+    sprite.setTextureRect(getBuildingTileRect(type, 16));
+    sprite.setPosition({ startTile.x * 16.f, startTile.y * 16.f }); // adjust for tile size
+}
+
 bool Building::loadTexture(const std::string& path) {
     return tileset.loadFromFile(path);
 }

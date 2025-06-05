@@ -83,7 +83,6 @@ int main()
     using clock = std::chrono::high_resolution_clock;
     auto lastFrameTime = clock::now();
 
-
     // run the main loop
     while (window.isOpen())
     {
@@ -122,18 +121,31 @@ int main()
                     sf::Vector2f uiPos = window.mapPixelToCoords(mouse);
                     sf::Vector2f worldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window), worldView);
 
+                    //select training box to queue unit
+                    if (trainButton.getGlobalBounds().contains(uiPos)) {
+                        if (selectedBuildingIndex != -1 && 
+                            placedBuildings[selectedBuildingIndex].type == BuildingType::Barracks) {
+                            Building& b = placedBuildings[selectedBuildingIndex];
+
+                            // add task to build queue
+                            Building::UnitBuildTask task;
+                            task.unitType = UnitType::Farmer;
+                            task.timeRemaining = 2.0f;
+
+                            b.buildQueue.push(task);
+                            std::cout << "Queued Farmer\n";
+
+                        }
+                    }
 
                     // select buildings
-                    if (!ghostSprite) {
-                        selectedBuildingIndex = -1;
-                        std::cout << placedBuildings.size();
-                        for (size_t i = 0; i < placedBuildings.size(); ++i) {
-                            if (placedBuildings[i].sprite.getGlobalBounds().contains(worldPos)) {
-                                if (placedBuildings[i].type == BuildingType::Barracks) {
-                                    selectedBuildingIndex = static_cast<int>(i);
-                                }
-                                break;
+                    selectedBuildingIndex = -1;
+                    for (size_t i = 0; i < placedBuildings.size(); ++i) {
+                        if (placedBuildings[i].sprite.getGlobalBounds().contains(worldPos)) {
+                            if (placedBuildings[i].type == BuildingType::Barracks) {
+                                selectedBuildingIndex = static_cast<int>(i);
                             }
+                            break;
                         }
                     }
 
@@ -204,9 +216,10 @@ int main()
                     task.timeRemaining -= dt;
                     if (task.timeRemaining <= 0.f) {
                         // spawn unit
-                        Unit newUnit(UnitType::Farmer, Building::tileset, building.tilePosition);
-                        units.push_back(newUnit);
-                        building.buildQueue.pop();
+                        std::cout << "unit complete\n";
+                        if (spawnUnitNextToBuilding(building, units, map)) {
+                            building.buildQueue.pop(); // only pop if successfully spawned
+                        }
                     }
                 }
             }
@@ -249,6 +262,10 @@ int main()
 
         for (const auto& building : placedBuildings)
             window.draw(building.sprite);
+
+        for (const auto& unit : units) {
+            window.draw(unit.sprite);
+        }
 
         if (ghostSprite)
             window.draw(*ghostSprite);
