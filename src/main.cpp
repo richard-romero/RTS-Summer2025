@@ -5,10 +5,24 @@
 #include "Building.hpp"
 #include "Unit.hpp"
 
+struct Resources {
+    int gold = 500;
+    int wood = 200;
+};
+
 int main()
 {
     // create the window
-    sf::RenderWindow window(sf::VideoMode({ 1920, 1080 }), "Tilemap");
+    sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+    unsigned int screenWidth = desktop.size.x;
+    unsigned int screenHeight = desktop.size.y;
+
+    float ratio = 0.75f;
+    unsigned int windowWidth = static_cast<unsigned>(screenWidth * ratio);
+    unsigned int windowHeight = static_cast<unsigned>(screenHeight * ratio);
+
+    sf::RenderWindow window(sf::VideoMode({ windowWidth, windowHeight }), "RTS Game");
+
     window.setMouseCursorGrabbed(true);
 
     sf::View worldView({ 800.f, 800.f }, { 300.f, 200.f });
@@ -32,6 +46,11 @@ int main()
     uiPanel.setPosition({ window.getSize().x / 2.f, window.getSize().y - 150.f });
     uiPanel.setFillColor(sf::Color(50, 50, 50, 200)); // semi-transparent gray
 
+    // resources panel
+    sf::RectangleShape resourcePanel({ 120.f, 30.f }); 
+    resourcePanel.setPosition({ 20.f, window.getSize().y - 800.f });
+    resourcePanel.setFillColor(sf::Color(50, 50, 50, 200));
+
     // create ui button for barracks
     sf::RectangleShape trainButton({ 120.f, 30.f });
     trainButton.setPosition({ 20.f, window.getSize().y - 50.f });
@@ -46,6 +65,13 @@ int main()
     sf::Text trainText(font, "Train Farmer", 16);
     trainText.setPosition({ trainButton.getPosition().x + 5, trainButton.getPosition().y + 5 });
     trainText.setFillColor(sf::Color::White);
+
+    // create resources struct and add number to text
+    Resources resource;
+    std::string label = "Gold: " + std::to_string(resource.gold);
+    sf::Text resourceText(font, label, 20);
+    resourceText.setPosition({ resourcePanel.getPosition().x + 5, resourcePanel.getPosition().y + 5 });
+    resourceText.setFillColor(sf::Color::White);
 
 
     // create barracks icon
@@ -166,11 +192,21 @@ int main()
                         // Snap to tile grid
                         int tileX = static_cast<int>(std::floor(worldPos.x / 16.f));
                         int tileY = static_cast<int>(std::floor(worldPos.y / 16.f));
-
+                        
                         if (!map.isOccupied(tileX, tileY)) {
+                            if (resource.gold <= 100) {
+                                std::cout << "Not enough gold!" << std::endl;
+                            }
+                            else {
                             // Place your building here — e.g. spawn building sprite
                             placeBuilding(selectedBuilding, tileX, tileY, placedBuildings);
                             map.markOccupied(tileX, tileY);
+
+                            // adjust resources upon placement
+                            resource.gold -= 100;
+                            label = "Gold: " + std::to_string(resource.gold);
+                            resourceText.setString(label);
+                            }
                         }
 
                         ghostSprite.reset();
@@ -281,6 +317,8 @@ int main()
 
         window.draw(uiPanel);
         window.draw(barracksIcon);
+        window.draw(resourcePanel);
+        window.draw(resourceText);
         window.display();
     }
 }
