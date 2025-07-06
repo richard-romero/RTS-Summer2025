@@ -25,7 +25,7 @@ int main()
 
     window.setMouseCursorGrabbed(true);
 
-    sf::View worldView({ 800.f, 800.f }, { 300.f, 200.f });
+    sf::View worldView({ 800.f, 800.f }, { 355.f, 200.f });
 
     // define the level with an array of tile indices
     std::vector<int> level(100 * 100, 1);
@@ -156,7 +156,7 @@ int main()
                             // add task to build queue
                             Building::UnitBuildTask task;
                             task.unitType = UnitType::Farmer;
-                            task.timeRemaining = 2.0f;
+                            task.timeRemaining = 1.0f;
 
                             b.buildQueue.push(task);
                             std::cout << "Queued Farmer\n";
@@ -194,7 +194,7 @@ int main()
                         int tileY = static_cast<int>(std::floor(worldPos.y / 16.f));
                         
                         if (!map.isOccupied(tileX, tileY)) {
-                            if (resource.gold <= 100) {
+                            if (resource.gold < 100) {
                                 std::cout << "Not enough gold!" << std::endl;
                             }
                             else {
@@ -215,9 +215,10 @@ int main()
                     }
 
                     // unit selection for movement
-                    for (int i = 0; i < units.size(); ++i) {
+                    selectedUnitIndex = -1;
+                    for (size_t i = 0; i < units.size(); ++i) {
                         if (units[i].sprite.getGlobalBounds().contains(worldPos)) {
-                            selectedUnitIndex = i;
+                            selectedUnitIndex = static_cast<int>(i);
                             break;
                         }
                     }
@@ -226,9 +227,10 @@ int main()
                 if (mouseButtonPressed->button == sf::Mouse::Button::Right) {
 
                     // unit movement
-                    if (selectedUnitIndex >= 0 && selectedUnitIndex < units.size()) {
+                    if (selectedUnitIndex != -1) {
                         sf::Vector2i mousePixelPos = sf::Mouse::getPosition(window);
                         sf::Vector2f worldPos = window.mapPixelToCoords(mousePixelPos, worldView);
+
                         sf::Vector2i targetTile = {
                             static_cast<int>(worldPos.x) / tileSize,
                             static_cast<int>(worldPos.y) / tileSize,
@@ -238,29 +240,12 @@ int main()
                     }
                 }
             }
-
-            auto now = clock::now();
-            std::chrono::duration<float> elapsed = now - lastFrameTime;
-            float dt = elapsed.count();
-            lastFrameTime = now;
-
-            for (auto& building : placedBuildings) {
-                if (building.type != BuildingType::Barracks) continue;
-
-                if (!building.buildQueue.empty()) {
-                    auto& task = building.buildQueue.front();
-                    task.timeRemaining -= dt;
-                    if (task.timeRemaining <= 0.f) {
-                        // spawn unit
-                        std::cout << "unit complete\n";
-                        if (spawnUnitNextToBuilding(building, units, map)) {
-                            building.buildQueue.pop(); // only pop if successfully spawned
-                        }
-                    }
-                }
-            }
             
         }
+        auto now = clock::now();
+        std::chrono::duration<float> elapsed = now - lastFrameTime;
+        float dt = elapsed.count(); // in seconds
+        lastFrameTime = now;
 
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         const int edgeMargin = 20;
@@ -289,7 +274,44 @@ int main()
             int tileY = static_cast<int>(std::floor(worldPos.y / 16.f));
 
             ghostSprite->setPosition({ tileX * 16.f, tileY * 16.f });
-        }        
+        }    
+
+        // place queued units
+        for (auto& building : placedBuildings) {
+            if (building.type != BuildingType::Barracks) continue;
+
+            if (!building.buildQueue.empty()) {
+                auto& task = building.buildQueue.front();
+                task.timeRemaining -= dt;
+                if (task.timeRemaining <= 0.f) {
+                    // spawn unit
+                    std::cout << "unit complete\n";
+                    if (spawnUnitNextToBuilding(building, units, map)) {
+                        building.buildQueue.pop(); // only pop if successfully spawned
+                    }
+                }
+            }
+        }
+
+        // move units
+        for (auto& unit : units) {
+            sf::Vector2f currentPos = unit.sprite.getPosition();
+            sf::Vector2f targetPos = {
+                unit.targetTile.x * static_cast<float>(tileSize),
+                unit.targetTile.y * static_cast<float>(tileSize)
+            };
+
+            sf::Vector2f delta = targetPos - currentPos;
+            float distance = std::hypot(delta.x, delta.y);
+
+            if (distance > 1.f) {
+                sf::Vector2f direction = delta / distance;
+                unit.sprite.move(direction * unit.speed * dt);
+            }
+            else {
+                unit.tilePos = unit.targetTile;
+            }
+        }
 
         // draw the map
         window.clear();
