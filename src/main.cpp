@@ -319,6 +319,33 @@ int main()
             }
         }
 
+        // chop tree 
+        for (auto& unit : units) {
+            if (unit.type != UnitType::Farmer) continue;
+            
+            bool chopping = false;
+
+            for (auto& tree : trees) {
+                if (tree.isChopped) continue;
+
+                if (unit.tilePos == tree.tilePos) {
+                    unit.chopTimer += dt;
+                    chopping = true;
+
+                    if (unit.chopTimer >= 1.0f) {
+                        tree.chop(10); // 10 wood per frame
+                        unit.chopTimer = 0.f; // reset timer every second
+                    
+                    }
+
+                    break; // only chop one tree at a time
+                }
+            }
+            if (!chopping) {
+                unit.chopTimer = 0.f; // reset only if no matching tree
+            }
+        }
+
         // draw the map
         window.clear();
         window.setView(worldView);

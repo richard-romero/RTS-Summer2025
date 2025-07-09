@@ -4,3 +4,12 @@ Tree::Tree(const sf::Texture& tileset, sf::Vector2i tile) : tilePos(tile), sprit
 	sprite.setTextureRect(sf::IntRect({ 4 * 16, 5 * 16 }, { 16, 16 }));
 	sprite.setPosition({ tile.x * 16.f, tile.y * 16.f });
 }
+
+void Tree::chop(int amount) {
+	woodRemaining -= amount;
+	if (woodRemaining <= 0) {
+		woodRemaining = 0;
+		isChopped = true;
+		sprite.setColor(sf::Color(100, 100, 100)); // turns white
+	}
+}
