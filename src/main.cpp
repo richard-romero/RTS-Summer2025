@@ -4,6 +4,7 @@
 #include "Tilemap.hpp"
 #include "Building.hpp"
 #include "Unit.hpp"
+#include "Tree.hpp"
 
 struct Resources {
     int gold = 500;
@@ -30,9 +31,14 @@ int main()
     // define the level with an array of tile indices
     std::vector<int> level(100 * 100, 1);
 
-    // Example: make a diagonal line
-    for (int i = 0; i < 100; ++i)
-        level[i + i * 100] = 37;
+
+    //initialize tree vector
+    std::vector<Tree> trees;
+
+    // place trees diagonally
+    for (int i = 0; i < 100; ++i) {
+        trees.emplace_back(Building::tileset, sf::Vector2i({ i, i }));
+    }
 
     // create the tilemap from the level definition
     TileMap map;
@@ -323,6 +329,10 @@ int main()
 
         for (const auto& unit : units) {
             window.draw(unit.sprite);
+        }
+
+        for (const Tree& tree : trees) {
+            window.draw(tree.sprite);
         }
 
         if (ghostSprite)
