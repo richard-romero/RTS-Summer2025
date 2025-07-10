@@ -8,7 +8,7 @@
 
 struct Resources {
     int gold = 500;
-    int wood = 200;
+    int wood = 0;
 };
 
 int main()
@@ -53,7 +53,7 @@ int main()
     uiPanel.setFillColor(sf::Color(50, 50, 50, 200)); // semi-transparent gray
 
     // resources panel
-    sf::RectangleShape resourcePanel({ 120.f, 30.f }); 
+    sf::RectangleShape resourcePanel({ 120.f, 50.f }); 
     resourcePanel.setPosition({ 20.f, window.getSize().y - 800.f });
     resourcePanel.setFillColor(sf::Color(50, 50, 50, 200));
 
@@ -74,7 +74,7 @@ int main()
 
     // create resources struct and add number to text
     Resources resource;
-    std::string label = "Gold: " + std::to_string(resource.gold);
+    std::string label = "Gold: " + std::to_string(resource.gold) + "\nWood: " + std::to_string(resource.wood);
     sf::Text resourceText(font, label, 20);
     resourceText.setPosition({ resourcePanel.getPosition().x + 5, resourcePanel.getPosition().y + 5 });
     resourceText.setFillColor(sf::Color::White);
@@ -88,7 +88,7 @@ int main()
     int tileY = 0; // row
     barracksIcon.setTextureRect(sf::IntRect({ tileX * tileSize, tileY * tileSize }, { tileSize, tileSize }));
     barracksIcon.setScale({ 5.f, 5.f });
-    barracksIcon.setPosition({ 250.f, window.getSize().y - 140.f });
+    barracksIcon.setPosition({ 200.f, window.getSize().y - 140.f });
 
     BuildingType selectedBuilding = BuildingType::None;
 
@@ -204,14 +204,14 @@ int main()
                                 std::cout << "Not enough gold!" << std::endl;
                             }
                             else {
-                            // Place your building here — e.g. spawn building sprite
-                            placeBuilding(selectedBuilding, tileX, tileY, placedBuildings);
-                            map.markOccupied(tileX, tileY);
+                                // Place your building here — e.g. spawn building sprite
+                                placeBuilding(selectedBuilding, tileX, tileY, placedBuildings);
+                                map.markOccupied(tileX, tileY);
 
-                            // adjust resources upon placement
-                            resource.gold -= 100;
-                            label = "Gold: " + std::to_string(resource.gold);
-                            resourceText.setString(label);
+                                // adjust resources upon placement
+                                resource.gold -= 100;
+                                std::string label = "Gold: " + std::to_string(resource.gold) + "\nWood: " + std::to_string(resource.wood);
+                                resourceText.setString(label);
                             }
                         }
 
@@ -334,6 +334,9 @@ int main()
 
                     if (unit.chopTimer >= 1.0f) {
                         tree.chop(10); // 10 wood per frame
+                        resource.wood += 10;
+                        std::string label = "Gold: " + std::to_string(resource.gold) + "\nWood: " + std::to_string(resource.wood);
+                        resourceText.setString(label);
                         unit.chopTimer = 0.f; // reset timer every second
                     
                     }

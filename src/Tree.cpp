@@ -6,10 +6,21 @@ Tree::Tree(const sf::Texture& tileset, sf::Vector2i tile) : tilePos(tile), sprit
 }
 
 void Tree::chop(int amount) {
+	if (isChopped) return;
+
 	woodRemaining -= amount;
-	if (woodRemaining <= 0) {
-		woodRemaining = 0;
+	if (woodRemaining < 0) woodRemaining = 0;
+
+	// fade tree based on remaining wood
+	float ratio = static_cast<float>(woodRemaining) / 100.f;
+	int alpha = static_cast<int>(ratio * 255.f);
+	sprite.setColor(sf::Color(255, 255, 255, alpha));
+
+	if (woodRemaining == 0) {
 		isChopped = true;
-		sprite.setColor(sf::Color(100, 100, 100)); // turns white
+		
+		// tree disappears
+		sprite.setColor(sf::Color(100, 100, 100, 0));
 	}
+
 }
