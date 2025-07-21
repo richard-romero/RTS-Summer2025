@@ -1,6 +1,6 @@
 #include "Unit.hpp"
 #include "Building.hpp"
-#include "Tilemap.hpp"]
+#include "Tilemap.hpp"
 #include <iostream>
 
 Unit::Unit(UnitType type, const sf::Texture& texture, sf::Vector2i startTile)
@@ -21,7 +21,9 @@ sf::Sprite getUnitSprite(UnitType type, int tileSize) {
 sf::IntRect getUnitRect(UnitType type, int tileSize) {
     switch (type) {
     case UnitType::Farmer:
-        return sf::IntRect({ 17 * tileSize, 5 * tileSize }, { tileSize, tileSize });
+        return sf::IntRect({ 17 * tileSize, 7 * tileSize }, { tileSize, tileSize });
+    case UnitType::EnemySoldier:
+        return sf::IntRect({ 16 * tileSize, 8 * tileSize }, { tileSize, tileSize });
     default:
         return sf::IntRect({ 0, 0 }, { 0, 0 }); // invalid
     }

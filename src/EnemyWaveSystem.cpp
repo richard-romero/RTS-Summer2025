@@ -36,9 +36,8 @@ void EnemyWaveSystem::spawnWave(int numEnemies, std::vector<Unit>& enemyUnits, c
         sf::Vector2i pos = spawnTile + offset;
 
         if (!map.isOccupied(pos.x, pos.y)) {
-            Unit enemy(UnitType::Farmer, tileset, pos);
+            Unit enemy(UnitType::EnemySoldier, tileset, pos);
             enemy.targetTile = targetTile;
-            enemy.isEnemy = true;
             enemyUnits.push_back(enemy);
             map.markOccupied(pos.x, pos.y);
         }

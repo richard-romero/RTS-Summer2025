@@ -2,5 +2,6 @@
 
 enum class UnitType {
 	Farmer,
-	Soldier
+	Soldier,
+	EnemySoldier
 };

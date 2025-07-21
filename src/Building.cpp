@@ -35,7 +35,7 @@ sf::Sprite getBuildingSprite(BuildingType type, int tileSize) {
 sf::IntRect getBuildingTileRect(BuildingType type, int tileSize) {
     switch (type) {
     case BuildingType::Barracks:
-        return sf::IntRect({ 8 * tileSize, 0 * tileSize }, { tileSize, tileSize });
+        return sf::IntRect({ 8 * tileSize, 2 * tileSize }, { tileSize, tileSize });
     case BuildingType::Farm:
         return sf::IntRect({ 5 * tileSize, 2 * tileSize }, { tileSize, tileSize });
     default:

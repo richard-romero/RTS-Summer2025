@@ -88,10 +88,7 @@ int main()
     // create barracks icon
     sf::Texture barracksTexture("tilemap_packed.png");
     sf::Sprite barracksIcon(barracksTexture);
-    int tileSize = 16;
-    int tileX = 8; // column
-    int tileY = 0; // row
-    barracksIcon.setTextureRect(sf::IntRect({ tileX * tileSize, tileY * tileSize }, { tileSize, tileSize }));
+    barracksIcon.setTextureRect(getBuildingTileRect(BuildingType::Barracks));
     barracksIcon.setScale({ 5.f, 5.f });
     barracksIcon.setPosition({ 200.f, window.getSize().y - 140.f });
 
@@ -243,8 +240,8 @@ int main()
                         sf::Vector2f worldPos = window.mapPixelToCoords(mousePixelPos, worldView);
 
                         sf::Vector2i targetTile = {
-                            static_cast<int>(worldPos.x) / tileSize,
-                            static_cast<int>(worldPos.y) / tileSize,
+                            static_cast<int>(worldPos.x) / 16,
+                            static_cast<int>(worldPos.y) / 16,
                         };
 
                         units[selectedUnitIndex].targetTile = targetTile;
@@ -294,8 +291,8 @@ int main()
         for (auto& unit : enemyUnits) {
             sf::Vector2f currentPos = unit.sprite.getPosition();
             sf::Vector2f targetPos = {
-                unit.targetTile.x * static_cast<float>(tileSize),
-                unit.targetTile.y * static_cast<float>(tileSize)
+                unit.targetTile.x * 16.f,
+                unit.targetTile.y * 16.f
             };
 
             sf::Vector2f delta = targetPos - currentPos;
@@ -331,8 +328,8 @@ int main()
         for (auto& unit : units) {
             sf::Vector2f currentPos = unit.sprite.getPosition();
             sf::Vector2f targetPos = {
-                unit.targetTile.x * static_cast<float>(tileSize),
-                unit.targetTile.y * static_cast<float>(tileSize)
+                unit.targetTile.x * 16.f,
+                unit.targetTile.y * 16.f
             };
 
             sf::Vector2f delta = targetPos - currentPos;
