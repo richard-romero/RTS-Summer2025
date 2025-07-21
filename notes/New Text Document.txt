@@ -1,0 +1,2 @@
+what to do next:
+add trees and make farmers harvest them once clicked

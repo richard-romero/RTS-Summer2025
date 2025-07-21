@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-class TileMap : public sf::Drawable, public sf::Transformable
+class Tilemap : public sf::Drawable, public sf::Transformable
 {
 public:
     bool load(const std::filesystem::path& tileset, sf::Vector2u tileSize, const int* tiles, unsigned int width, unsigned int height);

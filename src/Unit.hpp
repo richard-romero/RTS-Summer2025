@@ -16,8 +16,9 @@ struct Unit {
 	float speed = 40.f;	// how fast it moves
 	UnitType type;
 	float chopTimer = 0.f; // time spent chopping tree
+	bool isEnemy = false;
 
 	Unit(UnitType type, const sf::Texture& texture, sf::Vector2i startTile);
 };
 
-bool spawnUnitNextToBuilding(Building& building, std::vector<Unit>& units, TileMap& map);
+bool spawnUnitNextToBuilding(Building& building, std::vector<Unit>& units, Tilemap& map);

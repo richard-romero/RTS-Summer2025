@@ -5,6 +5,7 @@
 #include "Building.hpp"
 #include "Unit.hpp"
 #include "Tree.hpp"
+#include "EnemyWaveSystem.hpp"
 
 struct Resources {
     int gold = 500;
@@ -35,13 +36,17 @@ int main()
     //initialize tree vector
     std::vector<Tree> trees;
 
+    //initialize enemy vector
+    std::vector<Unit> enemyUnits;
+    EnemyWaveSystem waveSystem;
+
     // place trees diagonally
     for (int i = 0; i < 100; ++i) {
         trees.emplace_back(Building::tileset, sf::Vector2i({ i, i }));
     }
 
     // create the tilemap from the level definition
-    TileMap map;
+    Tilemap map;
     if (!map.load("tilemap_packed.png", { 16, 16 }, level.data(), 100, 100))
         return -1;
 
@@ -280,7 +285,30 @@ int main()
             int tileY = static_cast<int>(std::floor(worldPos.y / 16.f));
 
             ghostSprite->setPosition({ tileX * 16.f, tileY * 16.f });
-        }    
+        }  
+
+        // update wave system
+        waveSystem.update(dt, enemyUnits, Building::tileset, map, { 500, 500 }); // <- your actual base position
+
+        // Also update enemy units’ movement
+        for (auto& unit : enemyUnits) {
+            sf::Vector2f currentPos = unit.sprite.getPosition();
+            sf::Vector2f targetPos = {
+                unit.targetTile.x * static_cast<float>(tileSize),
+                unit.targetTile.y * static_cast<float>(tileSize)
+            };
+
+            sf::Vector2f delta = targetPos - currentPos;
+            float distance = std::hypot(delta.x, delta.y);
+
+            if (distance > 1.f) {
+                sf::Vector2f direction = delta / distance;
+                unit.sprite.move(direction * unit.speed * dt);
+            }
+            else {
+                unit.tilePos = unit.targetTile;
+            }
+        }
 
         // place queued units
         for (auto& building : placedBuildings) {
@@ -363,6 +391,11 @@ int main()
 
         for (const Tree& tree : trees) {
             window.draw(tree.sprite);
+        }
+
+        // draw enemies
+        for (const auto& unit : enemyUnits) {
+            window.draw(unit.sprite);
         }
 
         if (ghostSprite)

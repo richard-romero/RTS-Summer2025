@@ -27,7 +27,7 @@ sf::IntRect getUnitRect(UnitType type, int tileSize) {
     }
 }
 
-bool spawnUnitNextToBuilding(Building& building, std::vector<Unit>& units, TileMap& map) {
+bool spawnUnitNextToBuilding(Building& building, std::vector<Unit>& units, Tilemap& map) {
     static const std::vector<sf::Vector2i> offsets = {
         { 1, 0 }, {-1, 0 }, { 0, 1 }, { 0, -1 },
         { 1, 1 }, {-1, 1 }, { 1, -1 }, {-1, -1 }

@@ -1,6 +1,6 @@
 #include "Tilemap.hpp" 
 
-bool TileMap::load(const std::filesystem::path& tileset, sf::Vector2u tileSize, const int* tiles, unsigned int width, unsigned int height)
+bool Tilemap::load(const std::filesystem::path& tileset, sf::Vector2u tileSize, const int* tiles, unsigned int width, unsigned int height)
 {
     // load the tileset texture
     if (!m_tileset.loadFromFile(tileset))
@@ -46,7 +46,7 @@ bool TileMap::load(const std::filesystem::path& tileset, sf::Vector2u tileSize, 
     return true;
 }
 
-void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     // apply the transform
     states.transform *= getTransform();
@@ -75,10 +75,10 @@ void clampView(sf::View& view, sf::Vector2u mapSize, sf::Vector2u tileSize, sf::
     view.setCenter(center);
 }
 
-bool TileMap::isOccupied(int x, int y) const {
+bool Tilemap::isOccupied(int x, int y) const {
     return occupied[y][x];
 }
 
-void TileMap::markOccupied(int x, int y) {
+void Tilemap::markOccupied(int x, int y) {
     occupied[y][x] = true;
 }
