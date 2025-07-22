@@ -37,6 +37,7 @@ void EnemyWaveSystem::spawnWave(int numEnemies, std::vector<Unit>& enemyUnits, c
 
         if (!map.isOccupied(pos.x, pos.y)) {
             Unit enemy(UnitType::EnemySoldier, tileset, pos);
+            // set initial target to base tile
             enemy.targetTile = targetTile;
             enemyUnits.push_back(enemy);
             map.markOccupied(pos.x, pos.y);

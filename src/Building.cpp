@@ -38,6 +38,8 @@ sf::IntRect getBuildingTileRect(BuildingType type, int tileSize) {
         return sf::IntRect({ 8 * tileSize, 2 * tileSize }, { tileSize, tileSize });
     case BuildingType::Farm:
         return sf::IntRect({ 5 * tileSize, 2 * tileSize }, { tileSize, tileSize });
+    case BuildingType::Base:
+        return sf::IntRect({ 9 * tileSize, 2 * tileSize }, { tileSize, tileSize });
     default:
         return sf::IntRect({ 0, 0 }, { 0, 0 }); // invalid
     }

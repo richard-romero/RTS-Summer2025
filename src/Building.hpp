@@ -7,7 +7,8 @@
 enum class BuildingType {
 	None,
 	Barracks,
-	Farm
+	Farm,
+	Base
 };
 
 struct Building {

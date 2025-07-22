@@ -31,6 +31,7 @@ int main()
 
     // define the level with an array of tile indices
     std::vector<int> level(100 * 100, 1);
+    float tileSize = 16.f;
 
 
     //initialize tree vector
@@ -39,11 +40,6 @@ int main()
     //initialize enemy vector
     std::vector<Unit> enemyUnits;
     EnemyWaveSystem waveSystem;
-
-    // place trees diagonally
-    for (int i = 0; i < 100; ++i) {
-        trees.emplace_back(Building::tileset, sf::Vector2i({ i, i }));
-    }
 
     // create the tilemap from the level definition
     Tilemap map;
@@ -100,9 +96,18 @@ int main()
 
     // placed buildings vector
     std::vector<Building> placedBuildings;
+    placeBuilding(BuildingType::Base, 50, 50, placedBuildings);
+    map.markOccupied(50, 50);
+    Building* baseBuilding = &placedBuildings.back();
+
     if (!Building::loadTexture("tilemap_packed.png")) {
         std::cerr << "Failed to load building tileset.\n";
         return -1;
+    }
+
+    // place trees diagonally
+    for (int i = 0; i < 100; ++i) {
+        trees.emplace_back(Building::tileset, sf::Vector2i({ i, i }));
     }
 
     // track units and buildings and if they are selected
@@ -198,8 +203,8 @@ int main()
                         sf::Vector2f worldPos = window.mapPixelToCoords(mouse, worldView);
 
                         // Snap to tile grid
-                        int tileX = static_cast<int>(std::floor(worldPos.x / 16.f));
-                        int tileY = static_cast<int>(std::floor(worldPos.y / 16.f));
+                        int tileX = static_cast<int>(std::floor(worldPos.x / tileSize));
+                        int tileY = static_cast<int>(std::floor(worldPos.y / tileSize));
                         
                         if (!map.isOccupied(tileX, tileY)) {
                             if (resource.gold < 100) {
@@ -278,21 +283,22 @@ int main()
             sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
             sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos, worldView); // use current world view
 
-            int tileX = static_cast<int>(std::floor(worldPos.x / 16.f));
-            int tileY = static_cast<int>(std::floor(worldPos.y / 16.f));
+            int tileX = static_cast<int>(std::floor(worldPos.x / tileSize));
+            int tileY = static_cast<int>(std::floor(worldPos.y / tileSize));
 
-            ghostSprite->setPosition({ tileX * 16.f, tileY * 16.f });
+            ghostSprite->setPosition({ tileX * tileSize, tileY * tileSize });
         }  
 
         // update wave system
-        waveSystem.update(dt, enemyUnits, Building::tileset, map, { 500, 500 }); // <- your actual base position
+        waveSystem.update(dt, enemyUnits, Building::tileset, map, baseBuilding->tilePosition); // <- your actual base position
 
-        // Also update enemy units’ movement
+        // update enemy units movement
         for (auto& unit : enemyUnits) {
+
             sf::Vector2f currentPos = unit.sprite.getPosition();
             sf::Vector2f targetPos = {
-                unit.targetTile.x * 16.f,
-                unit.targetTile.y * 16.f
+                static_cast<float>(unit.targetTile.x * tileSize),
+                static_cast<float>(unit.targetTile.y * tileSize)
             };
 
             sf::Vector2f delta = targetPos - currentPos;
@@ -328,8 +334,8 @@ int main()
         for (auto& unit : units) {
             sf::Vector2f currentPos = unit.sprite.getPosition();
             sf::Vector2f targetPos = {
-                unit.targetTile.x * 16.f,
-                unit.targetTile.y * 16.f
+                unit.targetTile.x * tileSize,
+                unit.targetTile.y * tileSize
             };
 
             sf::Vector2f delta = targetPos - currentPos;
@@ -379,15 +385,15 @@ int main()
         window.setView(worldView);
         window.draw(map);
 
+        for (const Tree& tree : trees) {
+            window.draw(tree.sprite);
+        }
+
         for (const auto& building : placedBuildings)
             window.draw(building.sprite);
 
         for (const auto& unit : units) {
             window.draw(unit.sprite);
-        }
-
-        for (const Tree& tree : trees) {
-            window.draw(tree.sprite);
         }
 
         // draw enemies
