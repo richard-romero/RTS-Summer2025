@@ -31,7 +31,7 @@ int main()
 
     // define the level with an array of tile indices
     std::vector<int> level(100 * 100, 1);
-    float tileSize = 16.f;
+    int tileSize = 16;
 
 
     //initialize tree vector
@@ -286,7 +286,7 @@ int main()
             int tileX = static_cast<int>(std::floor(worldPos.x / tileSize));
             int tileY = static_cast<int>(std::floor(worldPos.y / tileSize));
 
-            ghostSprite->setPosition({ tileX * tileSize, tileY * tileSize });
+            ghostSprite->setPosition({ tileX * static_cast<float>(tileSize), tileY * static_cast<float>(tileSize) });
         }  
 
         // update wave system
@@ -310,6 +310,46 @@ int main()
             }
             else {
                 unit.tilePos = unit.targetTile;
+                unit.attackTimer += dt;
+
+                // attack base once per second
+                if (unit.attackTimer >= 1.f) {
+                    baseBuilding->hp -= unit.damage;
+                    unit.attackTimer = 0.f;
+
+                    std::cout << "Base took damage! HP: " << baseBuilding->hp << "\n";
+
+                    if (baseBuilding->hp <= 0) {
+                        std::cout << "Base destroyed!\n";
+                        // game over logic
+                    }
+                }
+            }
+        }
+
+        // unit vs. unit combat
+        for (auto& unit : units) {
+            for (auto& enemyUnit : enemyUnits) {
+                if (unit.tilePos == enemyUnit.tilePos) {
+                    unit.attackTimer += dt;
+                    enemyUnit.attackTimer += dt;
+
+                    if (unit.attackTimer >= 1.f) {
+                        enemyUnit.hp -= unit.damage;
+                        unit.attackTimer = 0.f;
+                        if (enemyUnit.hp <= 0) {
+                            // remove enemy
+                        }
+                    }
+
+                    if (enemyUnit.attackTimer >= 1.f) {
+                        unit.hp -= enemyUnit.damage;
+                        enemyUnit.attackTimer = 0.f;
+                        if (unit.hp <= 0) {
+                            // remove player unit
+                        }
+                    }
+                }
             }
         }
 
@@ -334,8 +374,8 @@ int main()
         for (auto& unit : units) {
             sf::Vector2f currentPos = unit.sprite.getPosition();
             sf::Vector2f targetPos = {
-                unit.targetTile.x * tileSize,
-                unit.targetTile.y * tileSize
+                unit.targetTile.x * static_cast<float>(tileSize),
+                unit.targetTile.y * static_cast<float>(tileSize)
             };
 
             sf::Vector2f delta = targetPos - currentPos;

@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <queue>
+#include "Unit.hpp"
 #include "UnitType.hpp"
 
 enum class BuildingType {
@@ -25,6 +26,7 @@ struct Building {
 	std::queue<UnitBuildTask> buildQueue;
 	float buildTimer = 0.f;
 	static bool loadTexture(const std::string& path);
+	int hp = 100; // default hp
 
 	Building(BuildingType type, sf::Vector2i startTile);
 };

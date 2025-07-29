@@ -1,10 +1,10 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include "Building.hpp"
-#include "Tilemap.hpp"
 #include "UnitType.hpp"
 
+class Building;
+class Tilemap;
 
 sf::IntRect getUnitRect(UnitType type, int tileSize = 16);
 sf::Sprite getUnitSprite(UnitType type, int tileSize);
@@ -16,6 +16,9 @@ struct Unit {
 	float speed = 40.f;	// how fast it moves
 	UnitType type;
 	float chopTimer = 0.f; // time spent chopping tree
+	float attackTimer = 0.f; // time spent attacking
+	int hp = 50; // default hp
+	int damage = 10; //default damage done to other units/buildings
 
 	Unit(UnitType type, const sf::Texture& texture, sf::Vector2i startTile);
 };
