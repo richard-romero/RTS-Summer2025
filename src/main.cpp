@@ -29,6 +29,8 @@ int main()
 
     sf::View worldView({ 800.f, 800.f }, { 355.f, 200.f });
 
+    bool gameOver = false;
+
     // define the level with an array of tile indices
     std::vector<int> level(100 * 100, 1);
     int tileSize = 16;
@@ -79,6 +81,13 @@ int main()
     sf::Text resourceText(font, label, 20);
     resourceText.setPosition({ resourcePanel.getPosition().x + 5, resourcePanel.getPosition().y + 5 });
     resourceText.setFillColor(sf::Color::White);
+
+    // game over text
+    sf::Text gameOverText(font, "Game Over", 48);
+    gameOverText.setFillColor(sf::Color::Red);
+    gameOverText.setOutlineColor(sf::Color::Black);
+    gameOverText.setOutlineThickness(2.f);
+    gameOverText.setPosition({ window.getSize().x / 2.f - 120.f, window.getSize().y / 2.f - 50.f });
 
 
     // create barracks icon
@@ -151,272 +160,276 @@ int main()
                     }
                 }
             }
+            if (!gameOver) {
+                if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
+                    if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
 
-            if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
-                if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
+                        // get pointer position
+                        sf::Vector2i mouse = sf::Mouse::getPosition(window);
+                        sf::Vector2f uiPos = window.mapPixelToCoords(mouse);
+                        sf::Vector2f worldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window), worldView);
 
-                    // get pointer position
-                    sf::Vector2i mouse = sf::Mouse::getPosition(window);
-                    sf::Vector2f uiPos = window.mapPixelToCoords(mouse);
-                    sf::Vector2f worldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window), worldView);
+                        //select training box to queue unit
+                        if (trainButton.getGlobalBounds().contains(uiPos)) {
+                            if (selectedBuildingIndex != -1 &&
+                                placedBuildings[selectedBuildingIndex].type == BuildingType::Barracks) {
+                                Building& b = placedBuildings[selectedBuildingIndex];
 
-                    //select training box to queue unit
-                    if (trainButton.getGlobalBounds().contains(uiPos)) {
-                        if (selectedBuildingIndex != -1 && 
-                            placedBuildings[selectedBuildingIndex].type == BuildingType::Barracks) {
-                            Building& b = placedBuildings[selectedBuildingIndex];
+                                // add task to build queue
+                                Building::UnitBuildTask task;
+                                task.unitType = UnitType::Farmer;
+                                task.timeRemaining = 1.0f;
 
-                            // add task to build queue
-                            Building::UnitBuildTask task;
-                            task.unitType = UnitType::Farmer;
-                            task.timeRemaining = 1.0f;
+                                b.buildQueue.push(task);
+                                std::cout << "Queued Farmer\n";
 
-                            b.buildQueue.push(task);
-                            std::cout << "Queued Farmer\n";
-
-                        }
-                    }
-
-                    // select buildings
-                    selectedBuildingIndex = -1;
-                    for (size_t i = 0; i < placedBuildings.size(); ++i) {
-                        if (placedBuildings[i].sprite.getGlobalBounds().contains(worldPos)) {
-                            if (placedBuildings[i].type == BuildingType::Barracks) {
-                                selectedBuildingIndex = static_cast<int>(i);
-                            }
-                            break;
-                        }
-                    }
-
-                    // ui building interaction
-                    if (barracksIcon.getGlobalBounds().contains(uiPos)) {
-                        selectedBuilding = BuildingType::Barracks;
-                        ghostSprite.emplace(Building::tileset);
-                        ghostSprite->setTextureRect(getBuildingTileRect(selectedBuilding));
-                        ghostSprite->setColor(sf::Color(255, 255, 255, 128));
-                    }
-
-                    // building placement
-                    if (selectedBuilding != BuildingType::None &&
-                        mouse.y < window.getSize().y - 150) {
-
-                        sf::Vector2f worldPos = window.mapPixelToCoords(mouse, worldView);
-
-                        // Snap to tile grid
-                        int tileX = static_cast<int>(std::floor(worldPos.x / tileSize));
-                        int tileY = static_cast<int>(std::floor(worldPos.y / tileSize));
-                        
-                        if (!map.isOccupied(tileX, tileY)) {
-                            if (resource.gold < 100) {
-                                std::cout << "Not enough gold!" << std::endl;
-                            }
-                            else {
-                                // Place your building here — e.g. spawn building sprite
-                                placeBuilding(selectedBuilding, tileX, tileY, placedBuildings);
-                                map.markOccupied(tileX, tileY);
-
-                                // adjust resources upon placement
-                                resource.gold -= 100;
-                                std::string label = "Gold: " + std::to_string(resource.gold) + "\nWood: " + std::to_string(resource.wood);
-                                resourceText.setString(label);
                             }
                         }
 
-                        ghostSprite.reset();
-                        selectedBuilding = BuildingType::None; // reset selection
-                        continue;
-                    }
+                        // select buildings
+                        selectedBuildingIndex = -1;
+                        for (size_t i = 0; i < placedBuildings.size(); ++i) {
+                            if (placedBuildings[i].sprite.getGlobalBounds().contains(worldPos)) {
+                                if (placedBuildings[i].type == BuildingType::Barracks) {
+                                    selectedBuildingIndex = static_cast<int>(i);
+                                }
+                                break;
+                            }
+                        }
 
-                    // unit selection for movement
-                    selectedUnitIndex = -1;
-                    for (size_t i = 0; i < units.size(); ++i) {
-                        if (units[i].sprite.getGlobalBounds().contains(worldPos)) {
-                            selectedUnitIndex = static_cast<int>(i);
-                            break;
+                        // ui building interaction
+                        if (barracksIcon.getGlobalBounds().contains(uiPos)) {
+                            selectedBuilding = BuildingType::Barracks;
+                            ghostSprite.emplace(Building::tileset);
+                            ghostSprite->setTextureRect(getBuildingTileRect(selectedBuilding));
+                            ghostSprite->setColor(sf::Color(255, 255, 255, 128));
+                        }
+
+                        // building placement
+                        if (selectedBuilding != BuildingType::None &&
+                            mouse.y < window.getSize().y - 150) {
+
+                            sf::Vector2f worldPos = window.mapPixelToCoords(mouse, worldView);
+
+                            // Snap to tile grid
+                            int tileX = static_cast<int>(std::floor(worldPos.x / tileSize));
+                            int tileY = static_cast<int>(std::floor(worldPos.y / tileSize));
+
+                            if (!map.isOccupied(tileX, tileY)) {
+                                if (resource.gold < 100) {
+                                    std::cout << "Not enough gold!" << std::endl;
+                                }
+                                else {
+                                    // Place your building here — e.g. spawn building sprite
+                                    placeBuilding(selectedBuilding, tileX, tileY, placedBuildings);
+                                    map.markOccupied(tileX, tileY);
+
+                                    // adjust resources upon placement
+                                    resource.gold -= 100;
+                                    std::string label = "Gold: " + std::to_string(resource.gold) + "\nWood: " + std::to_string(resource.wood);
+                                    resourceText.setString(label);
+                                }
+                            }
+
+                            ghostSprite.reset();
+                            selectedBuilding = BuildingType::None; // reset selection
+                            continue;
+                        }
+
+                        // unit selection for movement
+                        selectedUnitIndex = -1;
+                        for (size_t i = 0; i < units.size(); ++i) {
+                            if (units[i].sprite.getGlobalBounds().contains(worldPos)) {
+                                selectedUnitIndex = static_cast<int>(i);
+                                break;
+                            }
                         }
                     }
-                }
 
-                if (mouseButtonPressed->button == sf::Mouse::Button::Right) {
+                    if (mouseButtonPressed->button == sf::Mouse::Button::Right) {
 
-                    // unit movement
-                    if (selectedUnitIndex != -1) {
-                        sf::Vector2i mousePixelPos = sf::Mouse::getPosition(window);
-                        sf::Vector2f worldPos = window.mapPixelToCoords(mousePixelPos, worldView);
+                        // unit movement
+                        if (selectedUnitIndex != -1) {
+                            sf::Vector2i mousePixelPos = sf::Mouse::getPosition(window);
+                            sf::Vector2f worldPos = window.mapPixelToCoords(mousePixelPos, worldView);
 
-                        sf::Vector2i targetTile = {
-                            static_cast<int>(worldPos.x) / 16,
-                            static_cast<int>(worldPos.y) / 16,
-                        };
+                            sf::Vector2i targetTile = {
+                                static_cast<int>(worldPos.x) / 16,
+                                static_cast<int>(worldPos.y) / 16,
+                            };
 
-                        units[selectedUnitIndex].targetTile = targetTile;
+                            units[selectedUnitIndex].targetTile = targetTile;
+                        }
                     }
                 }
             }
             
         }
-        auto now = clock::now();
-        std::chrono::duration<float> elapsed = now - lastFrameTime;
-        float dt = elapsed.count(); // in seconds
-        lastFrameTime = now;
 
-        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-        const int edgeMargin = 20;
-        const float moveSpeed = 0.1f;
+        if (!gameOver) {
+            auto now = clock::now();
+            std::chrono::duration<float> elapsed = now - lastFrameTime;
+            float dt = elapsed.count(); // in seconds
+            lastFrameTime = now;
 
-        sf::Vector2f offset(0.f, 0.f);
+            sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+            const int edgeMargin = 20;
+            const float moveSpeed = 0.1f;
 
-        if (mousePos.x < edgeMargin)
-            offset.x -= moveSpeed;
-        else if (mousePos.x > window.getSize().x - edgeMargin)
-            offset.x += moveSpeed;
+            sf::Vector2f offset(0.f, 0.f);
 
-        if (mousePos.y < edgeMargin)
-            offset.y -= moveSpeed;
-        else if (mousePos.y > window.getSize().y - edgeMargin)
-            offset.y += moveSpeed;
+            if (mousePos.x < edgeMargin)
+                offset.x -= moveSpeed;
+            else if (mousePos.x > window.getSize().x - edgeMargin)
+                offset.x += moveSpeed;
 
-        worldView.move(offset);
-        clampView(worldView, { 100, 100 }, { 16, 16 }, window.getSize());
+            if (mousePos.y < edgeMargin)
+                offset.y -= moveSpeed;
+            else if (mousePos.y > window.getSize().y - edgeMargin)
+                offset.y += moveSpeed;
+
+            worldView.move(offset);
+            clampView(worldView, { 100, 100 }, { 16, 16 }, window.getSize());
         
-        if (ghostSprite && selectedBuilding != BuildingType::None) {
-            sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
-            sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos, worldView); // use current world view
+            if (ghostSprite && selectedBuilding != BuildingType::None) {
+                sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+                sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos, worldView); // use current world view
 
-            int tileX = static_cast<int>(std::floor(worldPos.x / tileSize));
-            int tileY = static_cast<int>(std::floor(worldPos.y / tileSize));
+                int tileX = static_cast<int>(std::floor(worldPos.x / tileSize));
+                int tileY = static_cast<int>(std::floor(worldPos.y / tileSize));
 
-            ghostSprite->setPosition({ tileX * static_cast<float>(tileSize), tileY * static_cast<float>(tileSize) });
-        }  
+                ghostSprite->setPosition({ tileX * static_cast<float>(tileSize), tileY * static_cast<float>(tileSize) });
+            }  
 
-        // update wave system
-        waveSystem.update(dt, enemyUnits, Building::tileset, map, baseBuilding->tilePosition); // <- your actual base position
+            // update wave system
+            waveSystem.update(dt, enemyUnits, Building::tileset, map, baseBuilding->tilePosition); // <- your actual base position
 
-        // update enemy units movement
-        for (auto& unit : enemyUnits) {
+            // update enemy units movement
+            for (auto& unit : enemyUnits) {
 
-            sf::Vector2f currentPos = unit.sprite.getPosition();
-            sf::Vector2f targetPos = {
-                static_cast<float>(unit.targetTile.x * tileSize),
-                static_cast<float>(unit.targetTile.y * tileSize)
-            };
+                sf::Vector2f currentPos = unit.sprite.getPosition();
+                sf::Vector2f targetPos = {
+                    static_cast<float>(unit.targetTile.x * tileSize),
+                    static_cast<float>(unit.targetTile.y * tileSize)
+                };
 
-            sf::Vector2f delta = targetPos - currentPos;
-            float distance = std::hypot(delta.x, delta.y);
+                sf::Vector2f delta = targetPos - currentPos;
+                float distance = std::hypot(delta.x, delta.y);
 
-            if (distance > 1.f) {
-                sf::Vector2f direction = delta / distance;
-                unit.sprite.move(direction * unit.speed * dt);
-            }
-            else {
-                unit.tilePos = unit.targetTile;
-                unit.attackTimer += dt;
-
-                // attack base once per second
-                if (unit.attackTimer >= 1.f) {
-                    baseBuilding->hp -= unit.damage;
-                    unit.attackTimer = 0.f;
-
-                    std::cout << "Base took damage! HP: " << baseBuilding->hp << "\n";
-
-                    if (baseBuilding->hp <= 0) {
-                        std::cout << "Base destroyed!\n";
-                        // game over logic
-                    }
+                if (distance > 1.f) {
+                    sf::Vector2f direction = delta / distance;
+                    unit.sprite.move(direction * unit.speed * dt);
                 }
-            }
-        }
-
-        // unit vs. unit combat
-        for (auto& unit : units) {
-            for (auto& enemyUnit : enemyUnits) {
-                if (unit.tilePos == enemyUnit.tilePos) {
+                else {
+                    unit.tilePos = unit.targetTile;
                     unit.attackTimer += dt;
-                    enemyUnit.attackTimer += dt;
 
+                    // attack base once per second
                     if (unit.attackTimer >= 1.f) {
-                        enemyUnit.hp -= unit.damage;
+                        baseBuilding->hp -= unit.damage;
                         unit.attackTimer = 0.f;
-                        if (enemyUnit.hp <= 0) {
-                            // remove enemy
-                        }
-                    }
 
-                    if (enemyUnit.attackTimer >= 1.f) {
-                        unit.hp -= enemyUnit.damage;
-                        enemyUnit.attackTimer = 0.f;
-                        if (unit.hp <= 0) {
-                            // remove player unit
+                        std::cout << "Base took damage! HP: " << baseBuilding->hp << "\n";
+
+                        if (baseBuilding->hp <= 0) {
+                            std::cout << "Base destroyed!\n";
+                            gameOver = true;
                         }
                     }
                 }
             }
-        }
 
-        // place queued units
-        for (auto& building : placedBuildings) {
-            if (building.type != BuildingType::Barracks) continue;
+            // unit vs. unit combat
+            for (auto& unit : units) {
+                for (auto& enemyUnit : enemyUnits) {
+                    if (unit.tilePos == enemyUnit.tilePos) {
+                        unit.attackTimer += dt;
+                        enemyUnit.attackTimer += dt;
 
-            if (!building.buildQueue.empty()) {
-                auto& task = building.buildQueue.front();
-                task.timeRemaining -= dt;
-                if (task.timeRemaining <= 0.f) {
-                    // spawn unit
-                    std::cout << "unit complete\n";
-                    if (spawnUnitNextToBuilding(building, units, map)) {
-                        building.buildQueue.pop(); // only pop if successfully spawned
+                        if (unit.attackTimer >= 1.f) {
+                            enemyUnit.hp -= unit.damage;
+                            unit.attackTimer = 0.f;
+                            if (enemyUnit.hp <= 0) {
+                                // remove enemy
+                            }
+                        }
+
+                        if (enemyUnit.attackTimer >= 1.f) {
+                            unit.hp -= enemyUnit.damage;
+                            enemyUnit.attackTimer = 0.f;
+                            if (unit.hp <= 0) {
+                                // remove player unit
+                            }
+                        }
                     }
                 }
             }
-        }
 
-        // move units
-        for (auto& unit : units) {
-            sf::Vector2f currentPos = unit.sprite.getPosition();
-            sf::Vector2f targetPos = {
-                unit.targetTile.x * static_cast<float>(tileSize),
-                unit.targetTile.y * static_cast<float>(tileSize)
-            };
+            // place queued units
+            for (auto& building : placedBuildings) {
+                if (building.type != BuildingType::Barracks) continue;
 
-            sf::Vector2f delta = targetPos - currentPos;
-            float distance = std::hypot(delta.x, delta.y);
-
-            if (distance > 1.f) {
-                sf::Vector2f direction = delta / distance;
-                unit.sprite.move(direction * unit.speed * dt);
-            }
-            else {
-                unit.tilePos = unit.targetTile;
-            }
-        }
-
-        // chop tree 
-        for (auto& unit : units) {
-            if (unit.type != UnitType::Farmer) continue;
-            
-            bool chopping = false;
-
-            for (auto& tree : trees) {
-                if (tree.isChopped) continue;
-
-                if (unit.tilePos == tree.tilePos) {
-                    unit.chopTimer += dt;
-                    chopping = true;
-
-                    if (unit.chopTimer >= 1.0f) {
-                        tree.chop(10); // 10 wood per frame
-                        resource.wood += 10;
-                        std::string label = "Gold: " + std::to_string(resource.gold) + "\nWood: " + std::to_string(resource.wood);
-                        resourceText.setString(label);
-                        unit.chopTimer = 0.f; // reset timer every second
-                    
+                if (!building.buildQueue.empty()) {
+                    auto& task = building.buildQueue.front();
+                    task.timeRemaining -= dt;
+                    if (task.timeRemaining <= 0.f) {
+                        // spawn unit
+                        std::cout << "unit complete\n";
+                        if (spawnUnitNextToBuilding(building, units, map)) {
+                            building.buildQueue.pop(); // only pop if successfully spawned
+                        }
                     }
-
-                    break; // only chop one tree at a time
                 }
             }
-            if (!chopping) {
-                unit.chopTimer = 0.f; // reset only if no matching tree
+
+            // move units
+            for (auto& unit : units) {
+                sf::Vector2f currentPos = unit.sprite.getPosition();
+                sf::Vector2f targetPos = {
+                    unit.targetTile.x * static_cast<float>(tileSize),
+                    unit.targetTile.y * static_cast<float>(tileSize)
+                };
+
+                sf::Vector2f delta = targetPos - currentPos;
+                float distance = std::hypot(delta.x, delta.y);
+
+                if (distance > 1.f) {
+                    sf::Vector2f direction = delta / distance;
+                    unit.sprite.move(direction * unit.speed * dt);
+                }
+                else {
+                    unit.tilePos = unit.targetTile;
+                }
+            }
+
+            // chop tree 
+            for (auto& unit : units) {
+                if (unit.type != UnitType::Farmer) continue;
+
+                bool chopping = false;
+
+                for (auto& tree : trees) {
+                    if (tree.isChopped) continue;
+
+                    if (unit.tilePos == tree.tilePos) {
+                        unit.chopTimer += dt;
+                        chopping = true;
+
+                        if (unit.chopTimer >= 1.0f) {
+                            tree.chop(10); // 10 wood per frame
+                            resource.wood += 10;
+                            std::string label = "Gold: " + std::to_string(resource.gold) + "\nWood: " + std::to_string(resource.wood);
+                            resourceText.setString(label);
+                            unit.chopTimer = 0.f; // reset timer every second
+
+                        }
+
+                        break; // only chop one tree at a time
+                    }
+                }
+                if (!chopping) {
+                    unit.chopTimer = 0.f; // reset only if no matching tree
+                }
             }
         }
 
@@ -451,6 +464,11 @@ int main()
             !ghostSprite) {
             window.draw(trainButton);
             window.draw(trainText);
+        }
+
+        if (gameOver) {
+            window.setView(window.getDefaultView());
+            window.draw(gameOverText);
         }
 
         window.draw(uiPanel);
