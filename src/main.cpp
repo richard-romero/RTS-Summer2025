@@ -8,8 +8,8 @@
 #include "EnemyWaveSystem.hpp"
 
 struct Resources {
-    int gold = 500;
-    int wood = 0;
+    int gold = 50;
+    int wood = 50;
 };
 
 int main()
@@ -60,7 +60,7 @@ int main()
     resourcePanel.setPosition({ 20.f, window.getSize().y - 800.f });
     resourcePanel.setFillColor(sf::Color(50, 50, 50, 200));
 
-    // create ui button for barracks
+    // create ui button for farm
     sf::RectangleShape trainButton({ 120.f, 30.f });
     trainButton.setPosition({ 20.f, window.getSize().y - 50.f });
     trainButton.setFillColor(sf::Color::Blue);
@@ -90,12 +90,19 @@ int main()
     gameOverText.setPosition({ window.getSize().x / 2.f - 120.f, window.getSize().y / 2.f - 50.f });
 
 
+    // create farm icon
+    sf::Texture farmTexture("tilemap_packed.png");
+    sf::Sprite farmIcon(farmTexture);
+    farmIcon.setTextureRect(getBuildingTileRect(BuildingType::Farm));
+    farmIcon.setScale({ 5.f, 5.f });
+    farmIcon.setPosition({ 200.f, window.getSize().y - 140.f });
+
     // create barracks icon
     sf::Texture barracksTexture("tilemap_packed.png");
     sf::Sprite barracksIcon(barracksTexture);
     barracksIcon.setTextureRect(getBuildingTileRect(BuildingType::Barracks));
     barracksIcon.setScale({ 5.f, 5.f });
-    barracksIcon.setPosition({ 200.f, window.getSize().y - 140.f });
+    barracksIcon.setPosition({ 300.f, window.getSize().y - 140.f });
 
     BuildingType selectedBuilding = BuildingType::None;
 
@@ -172,16 +179,24 @@ int main()
                         //select training box to queue unit
                         if (trainButton.getGlobalBounds().contains(uiPos)) {
                             if (selectedBuildingIndex != -1 &&
-                                placedBuildings[selectedBuildingIndex].type == BuildingType::Barracks) {
+                                placedBuildings[selectedBuildingIndex].type == BuildingType::Farm) {
                                 Building& b = placedBuildings[selectedBuildingIndex];
 
-                                // add task to build queue
-                                Building::UnitBuildTask task;
-                                task.unitType = UnitType::Farmer;
-                                task.timeRemaining = 1.0f;
+                                if (resource.gold >= getUnitCost(UnitType::Farmer)) {
+                                    resource.gold -= getUnitCost(UnitType::Farmer);
+                                    // Queue unit
+                                    Building::UnitBuildTask task;
+                                    task.unitType = UnitType::Farmer;
+                                    task.timeRemaining = 1.0f;
+                                    b.buildQueue.push(task);
+                                    std::cout << "Queued Farmer\n";
 
-                                b.buildQueue.push(task);
-                                std::cout << "Queued Farmer\n";
+                                    std::string label = "Gold: " + std::to_string(resource.gold) + "\nWood: " + std::to_string(resource.wood);
+                                    resourceText.setString(label);
+                                }
+                                else {
+                                    std::cout << "Not enough gold!\n";
+                                }
 
                             }
                         }
@@ -190,7 +205,7 @@ int main()
                         selectedBuildingIndex = -1;
                         for (size_t i = 0; i < placedBuildings.size(); ++i) {
                             if (placedBuildings[i].sprite.getGlobalBounds().contains(worldPos)) {
-                                if (placedBuildings[i].type == BuildingType::Barracks) {
+                                if (placedBuildings[i].type == BuildingType::Farm) {
                                     selectedBuildingIndex = static_cast<int>(i);
                                 }
                                 break;
@@ -198,6 +213,12 @@ int main()
                         }
 
                         // ui building interaction
+                        if (farmIcon.getGlobalBounds().contains(uiPos)) {
+                            selectedBuilding = BuildingType::Farm;
+                            ghostSprite.emplace(Building::tileset);
+                            ghostSprite->setTextureRect(getBuildingTileRect(selectedBuilding));
+                            ghostSprite->setColor(sf::Color(255, 255, 255, 128));
+                        } 
                         if (barracksIcon.getGlobalBounds().contains(uiPos)) {
                             selectedBuilding = BuildingType::Barracks;
                             ghostSprite.emplace(Building::tileset);
@@ -208,26 +229,27 @@ int main()
                         // building placement
                         if (selectedBuilding != BuildingType::None &&
                             mouse.y < window.getSize().y - 150) {
-
                             sf::Vector2f worldPos = window.mapPixelToCoords(mouse, worldView);
-
+   
                             // Snap to tile grid
                             int tileX = static_cast<int>(std::floor(worldPos.x / tileSize));
                             int tileY = static_cast<int>(std::floor(worldPos.y / tileSize));
 
                             if (!map.isOccupied(tileX, tileY)) {
-                                if (resource.gold < 100) {
-                                    std::cout << "Not enough gold!" << std::endl;
-                                }
-                                else {
+                                if (resource.wood >= getBuildingCost(selectedBuilding)) {
+                                    resource.wood -= getBuildingCost(selectedBuilding);
+
+                                    std::cout << "this executed" << std::endl;
                                     // Place your building here — e.g. spawn building sprite
                                     placeBuilding(selectedBuilding, tileX, tileY, placedBuildings);
                                     map.markOccupied(tileX, tileY);
 
                                     // adjust resources upon placement
-                                    resource.gold -= 100;
                                     std::string label = "Gold: " + std::to_string(resource.gold) + "\nWood: " + std::to_string(resource.wood);
                                     resourceText.setString(label);
+                                }
+                                else {
+                                std::cout << "Not enough gold!" << std::endl;
                                 }
                             }
 
@@ -274,7 +296,7 @@ int main()
 
             sf::Vector2i mousePos = sf::Mouse::getPosition(window);
             const int edgeMargin = 20;
-            const float moveSpeed = 0.1f;
+            const float moveSpeed = 0.2f;
 
             sf::Vector2f offset(0.f, 0.f);
 
@@ -367,7 +389,7 @@ int main()
 
             // place queued units
             for (auto& building : placedBuildings) {
-                if (building.type != BuildingType::Barracks) continue;
+                if (building.type != BuildingType::Farm) continue;
 
                 if (!building.buildQueue.empty()) {
                     auto& task = building.buildQueue.front();
@@ -459,8 +481,8 @@ int main()
 
         window.setView(window.getDefaultView());
 
-        // barracks menu
-        if (selectedBuildingIndex != -1 && placedBuildings[selectedBuildingIndex].type == BuildingType::Barracks &&
+        // farm menu
+        if (selectedBuildingIndex != -1 && placedBuildings[selectedBuildingIndex].type == BuildingType::Farm &&
             !ghostSprite) {
             window.draw(trainButton);
             window.draw(trainText);
@@ -472,6 +494,7 @@ int main()
         }
 
         window.draw(uiPanel);
+        window.draw(farmIcon);
         window.draw(barracksIcon);
         window.draw(resourcePanel);
         window.draw(resourceText);

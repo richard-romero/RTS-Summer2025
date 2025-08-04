@@ -24,3 +24,4 @@ struct Unit {
 };
 
 bool spawnUnitNextToBuilding(Building& building, std::vector<Unit>& units, Tilemap& map);
+int getUnitCost(UnitType type);

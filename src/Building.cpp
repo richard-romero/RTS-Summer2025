@@ -37,10 +37,18 @@ sf::IntRect getBuildingTileRect(BuildingType type, int tileSize) {
     case BuildingType::Barracks:
         return sf::IntRect({ 8 * tileSize, 2 * tileSize }, { tileSize, tileSize });
     case BuildingType::Farm:
-        return sf::IntRect({ 5 * tileSize, 2 * tileSize }, { tileSize, tileSize });
+        return sf::IntRect({ 12 * tileSize, 2 * tileSize }, { tileSize, tileSize });
     case BuildingType::Base:
         return sf::IntRect({ 9 * tileSize, 2 * tileSize }, { tileSize, tileSize });
     default:
         return sf::IntRect({ 0, 0 }, { 0, 0 }); // invalid
+    }
+}
+
+int getBuildingCost(BuildingType type) {
+    switch (type) {
+    case BuildingType::Farm: return 50;
+    case BuildingType::Barracks: return 80;
+    default: return 0;
     }
 }

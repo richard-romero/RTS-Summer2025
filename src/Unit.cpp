@@ -9,6 +9,21 @@ Unit::Unit(UnitType type, const sf::Texture& texture, sf::Vector2i startTile)
     sprite.setTextureRect(getUnitRect(type, 16));
     sprite.setPosition({ startTile.x * 16.f, startTile.y * 16.f }); // adjust for tile size
 
+    switch (type) {
+    case UnitType::Farmer:
+        hp = 30;
+        damage = 5;
+        break;
+    case UnitType::Soldier:
+        hp = 100;
+        damage = 20;
+        break;
+    case UnitType::EnemySoldier:
+        hp = 80;
+        damage = 15;
+        break;
+    }
+
 }
 sf::Sprite getUnitSprite(UnitType type, int tileSize) {
     sf::Sprite icon(Building::tileset);
@@ -46,4 +61,12 @@ bool spawnUnitNextToBuilding(Building& building, std::vector<Unit>& units, Tilem
     }
 
     return false; // no space to spawn
+}
+
+int getUnitCost(UnitType type) {
+    switch (type) {
+    case UnitType::Farmer: return 25;
+    case UnitType::Soldier: return 50;
+    default: return 0;
+    }
 }
