@@ -3,7 +3,6 @@
 #include <vector>
 #include <queue>
 #include "Unit.hpp"
-#include "UnitType.hpp"
 
 enum class BuildingType {
 	None,
@@ -17,6 +16,7 @@ struct Building {
 	BuildingType type;
 	sf::Sprite sprite;
 	sf::Vector2i tilePosition;
+	float flashTimer = 0.f;
 
 	struct UnitBuildTask {
 		float timeRemaining;

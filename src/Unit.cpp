@@ -70,3 +70,21 @@ int getUnitCost(UnitType type) {
     default: return 0;
     }
 }
+
+float distanceBetween(const sf::Vector2i& a, const sf::Vector2i& b) {
+    return std::hypot(b.x - a.x, b.y - a.y);
+}
+
+Unit* findNearestPlayerUnit(const Unit& enemy, std::vector<Unit>& playerUnits) {
+    Unit* nearest = nullptr;
+    float nearestDist = std::numeric_limits<float>::max();
+
+    for (auto& player : playerUnits) {
+        float dist = distanceBetween(enemy.tilePos, player.tilePos);
+        if (dist < nearestDist) {
+            nearestDist = dist;
+            nearest = &player;
+        }
+    }
+    return nearest;
+}

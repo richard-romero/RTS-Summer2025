@@ -1,7 +1,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include "UnitType.hpp"
+
+enum class UnitType {
+	Farmer,
+	Soldier,
+	EnemySoldier
+};
 
 class Building;
 class Tilemap;
@@ -25,3 +30,5 @@ struct Unit {
 
 bool spawnUnitNextToBuilding(Building& building, std::vector<Unit>& units, Tilemap& map);
 int getUnitCost(UnitType type);
+Unit* findNearestPlayerUnit(const Unit& enemy, std::vector<Unit>& playerUnits);
+float distanceBetween(const sf::Vector2i& a, const sf::Vector2i& b);

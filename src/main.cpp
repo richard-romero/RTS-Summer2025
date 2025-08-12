@@ -328,26 +328,46 @@ int main()
 
             // update enemy units movement
             for (auto& unit : enemyUnits) {
+                Unit* nearestTarget = findNearestPlayerUnit(unit, units);
+                float attackRange = 2.0f; 
+                sf::Vector2f basePos(
+                    baseBuilding->tilePosition.x* tileSize,
+                    baseBuilding->tilePosition.y* tileSize
+                );
 
                 sf::Vector2f currentPos = unit.sprite.getPosition();
-                sf::Vector2f targetPos = {
-                    static_cast<float>(unit.targetTile.x * tileSize),
-                    static_cast<float>(unit.targetTile.y * tileSize)
-                };
-
-                sf::Vector2f delta = targetPos - currentPos;
+                sf::Vector2f delta = basePos - currentPos;
                 float distance = std::hypot(delta.x, delta.y);
 
-                if (distance > 1.f) {
-                    sf::Vector2f direction = delta / distance;
-                    unit.sprite.move(direction * unit.speed * dt);
+                bool attacked = false;
+
+                if (nearestTarget && distanceBetween(unit.tilePos, nearestTarget->tilePos) < attackRange) {
+                    // attack player unit
+                    unit.attackTimer += dt;
+                    if (unit.attackTimer >= 1.f) {
+                        nearestTarget->hp -= unit.damage;
+                        unit.attackTimer = 0.f;
+                        attacked = true;
+                        std::cout << "Player unit hit! HP: " << nearestTarget->hp << "\n";
+                    }
                 }
-                else {
+
+                if (distance < attackRange) {
                     unit.tilePos = unit.targetTile;
                     unit.attackTimer += dt;
 
+                    if (baseBuilding->sprite.getColor() == sf::Color::Red) {
+                        baseBuilding->flashTimer += dt;
+                        if (baseBuilding->flashTimer >= 0.1f) {
+                            baseBuilding->sprite.setColor(sf::Color::White);
+                        }
+                    }
+
                     // attack base once per second
                     if (unit.attackTimer >= 1.f) {
+                        baseBuilding->sprite.setColor(sf::Color::Red);
+                        baseBuilding->flashTimer = 0.f;
+
                         baseBuilding->hp -= unit.damage;
                         unit.attackTimer = 0.f;
 
@@ -358,13 +378,23 @@ int main()
                             gameOver = true;
                         }
                     }
+                    attacked = true;
+                }
+                if (!attacked) {
+                    sf::Vector2f direction = delta / distance;
+                    unit.sprite.move(direction * unit.speed * dt);
                 }
             }
 
             // unit vs. unit combat
             for (auto& unit : units) {
                 for (auto& enemyUnit : enemyUnits) {
-                    if (unit.tilePos == enemyUnit.tilePos) {
+                    float attackRange = 2.0f; // in tiles
+                    float dx = unit.tilePos.x - enemyUnit.tilePos.x;
+                    float dy = unit.tilePos.y - enemyUnit.tilePos.y;
+                    float distance = std::sqrt(dx * dx + dy * dy);
+
+                    if (distance <= attackRange) {
                         unit.attackTimer += dt;
                         enemyUnit.attackTimer += dt;
 
