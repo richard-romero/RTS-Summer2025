@@ -43,6 +43,9 @@ int main()
     std::vector<Unit> enemyUnits;
     EnemyWaveSystem waveSystem;
 
+    std::vector<size_t> deadEnemies;
+    std::vector<size_t> deadPlayers;
+
     // create the tilemap from the level definition
     Tilemap map;
     if (!map.load("tilemap_packed.png", { 16, 16 }, level.data(), 100, 100))
@@ -114,7 +117,7 @@ int main()
     std::vector<Building> placedBuildings;
     placeBuilding(BuildingType::Base, 50, 50, placedBuildings);
     map.markOccupied(50, 50);
-    Building* baseBuilding = &placedBuildings.back();
+    int baseIndex = placedBuildings.size() - 1;
 
     if (!Building::loadTexture("tilemap_packed.png")) {
         std::cerr << "Failed to load building tileset.\n";
@@ -324,98 +327,104 @@ int main()
             }  
 
             // update wave system
-            waveSystem.update(dt, enemyUnits, Building::tileset, map, baseBuilding->tilePosition); // <- your actual base position
+            waveSystem.update(dt, enemyUnits, Building::tileset, map, placedBuildings[baseIndex].tilePosition); // <- your actual base position
 
             // update enemy units movement
-            for (auto& unit : enemyUnits) {
-                Unit* nearestTarget = findNearestPlayerUnit(unit, units);
-                float attackRange = 2.0f; 
-                sf::Vector2f basePos(
-                    baseBuilding->tilePosition.x* tileSize,
-                    baseBuilding->tilePosition.y* tileSize
-                );
+            for (size_t e = 0; e < enemyUnits.size(); ++e) {
+                Unit& enemy = enemyUnits[e];
 
-                sf::Vector2f currentPos = unit.sprite.getPosition();
-                sf::Vector2f delta = basePos - currentPos;
-                float distance = std::hypot(delta.x, delta.y);
-
+                // Find nearest player unit
+                Unit* nearestTarget = findNearestPlayerUnit(enemy, units);
+                float attackRange = 2.0f; // in tiles
                 bool attacked = false;
 
-                if (nearestTarget && distanceBetween(unit.tilePos, nearestTarget->tilePos) < attackRange) {
-                    // attack player unit
-                    unit.attackTimer += dt;
-                    if (unit.attackTimer >= 1.f) {
-                        nearestTarget->hp -= unit.damage;
-                        unit.attackTimer = 0.f;
-                        attacked = true;
-                        std::cout << "Player unit hit! HP: " << nearestTarget->hp << "\n";
+                // Attack player unit if in range
+                if (nearestTarget) {
+                    float distToPlayer = distanceBetween(enemy.tilePos, nearestTarget->tilePos);
+                    if (distToPlayer <= attackRange) {
+                        enemy.attackTimer += dt;
+                        if (enemy.attackTimer >= 1.f) {
+                            nearestTarget->hp -= enemy.damage;
+                            enemy.attackTimer = 0.f;
+                            attacked = true;
+
+                            std::cout << "Player unit hit! HP: " << nearestTarget->hp << "\n";
+
+                            if (nearestTarget->hp <= 0) {
+                                // Mark player for removal
+                                auto it = std::find_if(units.begin(), units.end(),
+                                    [&](const Unit& u) { return &u == nearestTarget; });
+                                if (it != units.end()) {
+                                    deadPlayers.push_back(std::distance(units.begin(), it));
+                                }
+                            }
+                        }
                     }
                 }
 
-                if (distance < attackRange) {
-                    unit.tilePos = unit.targetTile;
-                    unit.attackTimer += dt;
-
-                    if (baseBuilding->sprite.getColor() == sf::Color::Red) {
-                        baseBuilding->flashTimer += dt;
-                        if (baseBuilding->flashTimer >= 0.1f) {
-                            baseBuilding->sprite.setColor(sf::Color::White);
-                        }
-                    }
-
-                    // attack base once per second
-                    if (unit.attackTimer >= 1.f) {
-                        baseBuilding->sprite.setColor(sf::Color::Red);
-                        baseBuilding->flashTimer = 0.f;
-
-                        baseBuilding->hp -= unit.damage;
-                        unit.attackTimer = 0.f;
-
-                        std::cout << "Base took damage! HP: " << baseBuilding->hp << "\n";
-
-                        if (baseBuilding->hp <= 0) {
-                            std::cout << "Base destroyed!\n";
-                            gameOver = true;
-                        }
-                    }
-                    attacked = true;
-                }
+                // If no player in range, attack base if in range
                 if (!attacked) {
-                    sf::Vector2f direction = delta / distance;
-                    unit.sprite.move(direction * unit.speed * dt);
+                    float distToBase = distanceBetween(enemy.tilePos, placedBuildings[baseIndex].tilePosition);
+                    if (distToBase <= attackRange) {
+                        enemy.attackTimer += dt;
+                        if (enemy.attackTimer >= 1.f) {
+                            placedBuildings[baseIndex].hp -= enemy.damage;
+                            enemy.attackTimer = 0.f;
+
+                            std::cout << "Base took damage! HP: " << placedBuildings[baseIndex].hp << "\n";
+                            if (placedBuildings[baseIndex].hp <= 0) {
+                                gameOver = true;
+                            }
+                        }
+                        attacked = true;
+                    }
                 }
-            }
 
-            // unit vs. unit combat
-            for (auto& unit : units) {
-                for (auto& enemyUnit : enemyUnits) {
-                    float attackRange = 2.0f; // in tiles
-                    float dx = unit.tilePos.x - enemyUnit.tilePos.x;
-                    float dy = unit.tilePos.y - enemyUnit.tilePos.y;
-                    float distance = std::sqrt(dx * dx + dy * dy);
+                // Move toward target if not attacking
+                if (!attacked) {
+                    sf::Vector2i targetTile;
+                    if (nearestTarget) {
+                        targetTile = nearestTarget->tilePos;
+                    }
+                    else {
+                        targetTile = placedBuildings[baseIndex].tilePosition;
+                    }
 
-                    if (distance <= attackRange) {
-                        unit.attackTimer += dt;
-                        enemyUnit.attackTimer += dt;
+                    sf::Vector2f targetPos(
+                        targetTile.x * tileSize,
+                        targetTile.y * tileSize
+                    );
+                    sf::Vector2f currentPos = enemy.sprite.getPosition();
+                    sf::Vector2f delta = targetPos - currentPos;
+                    float distPixels = std::hypot(delta.x, delta.y);
 
-                        if (unit.attackTimer >= 1.f) {
-                            enemyUnit.hp -= unit.damage;
-                            unit.attackTimer = 0.f;
-                            if (enemyUnit.hp <= 0) {
-                                // remove enemy
-                            }
-                        }
+                    if (distPixels > 0.f) {
+                        sf::Vector2f direction = delta / distPixels;
+                        enemy.sprite.move(direction * enemy.speed * dt);
 
-                        if (enemyUnit.attackTimer >= 1.f) {
-                            unit.hp -= enemyUnit.damage;
-                            enemyUnit.attackTimer = 0.f;
-                            if (unit.hp <= 0) {
-                                // remove player unit
-                            }
-                        }
+                        // Update tile position
+                        enemy.tilePos = sf::Vector2i(
+                            static_cast<int>(enemy.sprite.getPosition().x) / tileSize,
+                            static_cast<int>(enemy.sprite.getPosition().y) / tileSize
+                        );
                     }
                 }
             }
+
+            // Award gold & remove dead enemies
+            std::sort(deadEnemies.rbegin(), deadEnemies.rend());
+            for (size_t idx : deadEnemies) {
+                resource.gold += 5; // example gold reward
+                enemyUnits.erase(enemyUnits.begin() + idx);
+            }
+            deadEnemies.clear();
+
+            // Remove dead players
+            std::sort(deadPlayers.rbegin(), deadPlayers.rend());
+            for (size_t idx : deadPlayers) {
+                units.erase(units.begin() + idx);
+            }
+            deadPlayers.clear();
 
             // place queued units
             for (auto& building : placedBuildings) {
@@ -483,6 +492,23 @@ int main()
                     unit.chopTimer = 0.f; // reset only if no matching tree
                 }
             }
+
+            units.erase(
+                std::remove_if(units.begin(), units.end(),
+                    [](const Unit& u) {
+                        return u.hp <= 0;
+                    }),
+                units.end()
+            );
+
+            enemyUnits.erase(
+                std::remove_if(enemyUnits.begin(), enemyUnits.end(),
+                    [](const Unit& u) {
+                        return u.hp <= 0;
+                    }),
+                enemyUnits.end()
+            );
+
         }
 
         // draw the map
