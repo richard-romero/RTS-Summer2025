@@ -3,10 +3,10 @@
 
 EnemyWaveSystem::EnemyWaveSystem() {
     waves = {
-        { 10.f, 3 },
-        { 25.f, 5 },
-        { 45.f, 8 },
-        { 70.f, 12 }
+        { 10.f, 1 },
+        { 25.f, 3 },
+        { 45.f, 5 },
+        { 70.f, 8 }
     };
 }
 

@@ -242,7 +242,6 @@ int main()
                                 if (resource.wood >= getBuildingCost(selectedBuilding)) {
                                     resource.wood -= getBuildingCost(selectedBuilding);
 
-                                    std::cout << "this executed" << std::endl;
                                     // Place your building here — e.g. spawn building sprite
                                     placeBuilding(selectedBuilding, tileX, tileY, placedBuildings);
                                     map.markOccupied(tileX, tileY);
@@ -329,7 +328,7 @@ int main()
             // update wave system
             waveSystem.update(dt, enemyUnits, Building::tileset, map, placedBuildings[baseIndex].tilePosition); // <- your actual base position
 
-            // update enemy units movement
+            // enemy movement + combat
             for (size_t e = 0; e < enemyUnits.size(); ++e) {
                 Unit& enemy = enemyUnits[e];
 
@@ -342,11 +341,11 @@ int main()
                 if (nearestTarget) {
                     float distToPlayer = distanceBetween(enemy.tilePos, nearestTarget->tilePos);
                     if (distToPlayer <= attackRange) {
+                        attacked = true;
                         enemy.attackTimer += dt;
                         if (enemy.attackTimer >= 1.f) {
                             nearestTarget->hp -= enemy.damage;
                             enemy.attackTimer = 0.f;
-                            attacked = true;
 
                             std::cout << "Player unit hit! HP: " << nearestTarget->hp << "\n";
 
@@ -362,7 +361,7 @@ int main()
                     }
                 }
 
-                // If no player in range, attack base if in range
+                //If no player in range, attack base if in range
                 if (!attacked) {
                     float distToBase = distanceBetween(enemy.tilePos, placedBuildings[baseIndex].tilePosition);
                     if (distToBase <= attackRange) {
@@ -378,7 +377,7 @@ int main()
                         }
                         attacked = true;
                     }
-                }
+                } 
 
                 // Move toward target if not attacking
                 if (!attacked) {
@@ -411,10 +410,48 @@ int main()
                 }
             }
 
+            // player unit combat
+            for (size_t u = 0; u < units.size(); ++u) {
+                Unit& unit = units[u];
+
+                // Find nearest enemy unit
+                Unit* nearestTarget = findNearestPlayerUnit(unit, enemyUnits);
+                float attackRange = 2.0f; // in tiles
+                bool attacked = false;
+
+                // Attack unit unit if in range
+                if (nearestTarget) {
+                    float distToPlayer = distanceBetween(unit.tilePos, nearestTarget->tilePos);
+                    if (distToPlayer <= attackRange) {
+                        attacked = true;
+                        unit.attackTimer += dt;
+                        if (unit.attackTimer >= 1.f) {
+                            std::cout << "enemy taking damage!" << std::endl;
+                            nearestTarget->hp -= unit.damage;
+                            unit.attackTimer = 0.f;
+
+                            std::cout << "Player unit hit! HP: " << nearestTarget->hp << "\n";
+
+                            if (nearestTarget->hp <= 0) {
+                                // Mark enemy for removal
+                                auto it = std::find_if(enemyUnits.begin(), enemyUnits.end(),
+                                    [&](const Unit& u) { return &u == nearestTarget; });
+                                if (it != enemyUnits.end()) {
+                                    deadEnemies.push_back(std::distance(enemyUnits.begin(), it));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             // Award gold & remove dead enemies
             std::sort(deadEnemies.rbegin(), deadEnemies.rend());
             for (size_t idx : deadEnemies) {
-                resource.gold += 5; // example gold reward
+                resource.gold += 10; // example gold reward
+                std::cout << resource.gold << std::endl;
+                std::string label = "Gold: " + std::to_string(resource.gold) + "\nWood: " + std::to_string(resource.wood);
+                resourceText.setString(label);
                 enemyUnits.erase(enemyUnits.begin() + idx);
             }
             deadEnemies.clear();

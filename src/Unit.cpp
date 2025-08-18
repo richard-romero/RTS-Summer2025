@@ -12,7 +12,7 @@ Unit::Unit(UnitType type, const sf::Texture& texture, sf::Vector2i startTile)
     switch (type) {
     case UnitType::Farmer:
         hp = 30;
-        damage = 5;
+        damage = 10;
         break;
     case UnitType::Soldier:
         hp = 100;
@@ -65,8 +65,8 @@ bool spawnUnitNextToBuilding(Building& building, std::vector<Unit>& units, Tilem
 
 int getUnitCost(UnitType type) {
     switch (type) {
-    case UnitType::Farmer: return 25;
-    case UnitType::Soldier: return 50;
+    case UnitType::Farmer: return 15;
+    case UnitType::Soldier: return 30;
     default: return 0;
     }
 }
