@@ -18,10 +18,11 @@ struct Unit {
 	sf::Sprite sprite;
 	sf::Vector2i tilePos;
 	sf::Vector2i targetTile; // where it's going
-	float speed = 40.f;	// how fast it moves
+	float speed = 40.f;	// how fast it moves (was 40)
 	UnitType type;
 	float chopTimer = 0.f; // time spent chopping tree
 	float attackTimer = 0.f; // time spent attacking
+	float flashTimer = 0.f;
 	int hp = 50; // default hp
 	int damage = 10; //default damage done to other units/buildings
 

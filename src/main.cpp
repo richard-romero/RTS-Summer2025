@@ -9,7 +9,7 @@
 
 struct Resources {
     int gold = 50;
-    int wood = 50;
+    int wood = 80;
 };
 
 int main()
@@ -53,7 +53,7 @@ int main()
 
     // create ui panel
     sf::RectangleShape uiPanel;
-    uiPanel.setSize({ window.getSize().x * 0.75f, 100.f });
+    uiPanel.setSize({ window.getSize().x * 0.25f, 100.f });
     uiPanel.setOrigin({ uiPanel.getSize().x / 2.f, 0.f }); // center it horizontally
     uiPanel.setPosition({ window.getSize().x / 2.f, window.getSize().y - 150.f });
     uiPanel.setFillColor(sf::Color(50, 50, 50, 200)); // semi-transparent gray
@@ -63,7 +63,7 @@ int main()
     resourcePanel.setPosition({ 20.f, window.getSize().y - 800.f });
     resourcePanel.setFillColor(sf::Color(50, 50, 50, 200));
 
-    // create ui button for farm
+    // create ui button for buildings
     sf::RectangleShape trainButton({ 120.f, 30.f });
     trainButton.setPosition({ 20.f, window.getSize().y - 50.f });
     trainButton.setFillColor(sf::Color::Blue);
@@ -74,9 +74,16 @@ int main()
         return -1;
     }
 
-    sf::Text trainText(font, "Train Farmer", 16);
-    trainText.setPosition({ trainButton.getPosition().x + 5, trainButton.getPosition().y + 5 });
-    trainText.setFillColor(sf::Color::White);
+    sf::Text trainFarmerText(font, "Train Farmer", 16);
+    trainFarmerText.setPosition({ trainButton.getPosition().x + 5, trainButton.getPosition().y + 5 });
+    trainFarmerText.setFillColor(sf::Color::White);
+    trainFarmerText.setFillColor(sf::Color::White);
+
+    sf::Text trainSoldierText(font, "Train Soldier", 16);
+    trainSoldierText.setPosition({ trainButton.getPosition().x + 5, trainButton.getPosition().y + 5 });
+    trainSoldierText.setFillColor(sf::Color::White);
+    trainSoldierText.setFillColor(sf::Color::White);
+
 
     // create resources struct and add number to text
     Resources resource;
@@ -98,14 +105,14 @@ int main()
     sf::Sprite farmIcon(farmTexture);
     farmIcon.setTextureRect(getBuildingTileRect(BuildingType::Farm));
     farmIcon.setScale({ 5.f, 5.f });
-    farmIcon.setPosition({ 200.f, window.getSize().y - 140.f });
+    farmIcon.setPosition({ 600.f, window.getSize().y - 140.f });
 
     // create barracks icon
     sf::Texture barracksTexture("tilemap_packed.png");
     sf::Sprite barracksIcon(barracksTexture);
     barracksIcon.setTextureRect(getBuildingTileRect(BuildingType::Barracks));
     barracksIcon.setScale({ 5.f, 5.f });
-    barracksIcon.setPosition({ 300.f, window.getSize().y - 140.f });
+    barracksIcon.setPosition({ 760.f, window.getSize().y - 140.f });
 
     BuildingType selectedBuilding = BuildingType::None;
 
@@ -200,6 +207,26 @@ int main()
                                 else {
                                     std::cout << "Not enough gold!\n";
                                 }
+                            }
+                            else if (selectedBuildingIndex != -1 &&
+                                placedBuildings[selectedBuildingIndex].type == BuildingType::Barracks) {
+                                Building& b = placedBuildings[selectedBuildingIndex];
+
+                                if (resource.gold >= getUnitCost(UnitType::Soldier)) {
+                                    resource.gold -= getUnitCost(UnitType::Soldier);
+                                    // Queue unit
+                                    Building::UnitBuildTask task;
+                                    task.unitType = UnitType::Soldier;
+                                    task.timeRemaining = 1.0f;
+                                    b.buildQueue.push(task);
+                                    std::cout << "Queued Soldier\n";
+
+                                    std::string label = "Gold: " + std::to_string(resource.gold) + "\nWood: " + std::to_string(resource.wood);
+                                    resourceText.setString(label);
+                                }
+                                else {
+                                    std::cout << "Not enough gold!\n";
+                                }
 
                             }
                         }
@@ -208,10 +235,7 @@ int main()
                         selectedBuildingIndex = -1;
                         for (size_t i = 0; i < placedBuildings.size(); ++i) {
                             if (placedBuildings[i].sprite.getGlobalBounds().contains(worldPos)) {
-                                if (placedBuildings[i].type == BuildingType::Farm) {
-                                    selectedBuildingIndex = static_cast<int>(i);
-                                }
-                                break;
+                                selectedBuildingIndex = static_cast<int>(i);
                             }
                         }
 
@@ -340,10 +364,18 @@ int main()
                 // Attack player unit if in range
                 if (nearestTarget) {
                     float distToPlayer = distanceBetween(enemy.tilePos, nearestTarget->tilePos);
+                    if (nearestTarget->sprite.getColor() == sf::Color::Red) {
+                        nearestTarget->flashTimer += dt;
+                        if (nearestTarget->flashTimer >= 0.1f) {
+                            nearestTarget->sprite.setColor(sf::Color::White);
+                        }
+                    }
                     if (distToPlayer <= attackRange) {
                         attacked = true;
                         enemy.attackTimer += dt;
                         if (enemy.attackTimer >= 1.f) {
+                            nearestTarget->sprite.setColor(sf::Color::Red);
+                            nearestTarget->flashTimer = 0.f;
                             nearestTarget->hp -= enemy.damage;
                             enemy.attackTimer = 0.f;
 
@@ -364,9 +396,18 @@ int main()
                 //If no player in range, attack base if in range
                 if (!attacked) {
                     float distToBase = distanceBetween(enemy.tilePos, placedBuildings[baseIndex].tilePosition);
+
+                    if (placedBuildings[baseIndex].sprite.getColor() == sf::Color::Red) {
+                        placedBuildings[baseIndex].flashTimer += dt;
+                        if (placedBuildings[baseIndex].flashTimer >= 0.1f) {
+                            placedBuildings[baseIndex].sprite.setColor(sf::Color::White);
+                        }
+                    }
                     if (distToBase <= attackRange) {
                         enemy.attackTimer += dt;
                         if (enemy.attackTimer >= 1.f) {
+                            placedBuildings[baseIndex].sprite.setColor(sf::Color::Red);
+                            placedBuildings[baseIndex].flashTimer = 0.f;
                             placedBuildings[baseIndex].hp -= enemy.damage;
                             enemy.attackTimer = 0.f;
 
@@ -419,14 +460,21 @@ int main()
                 float attackRange = 2.0f; // in tiles
                 bool attacked = false;
 
-                // Attack unit unit if in range
+                // Attack unit if in range
                 if (nearestTarget) {
                     float distToPlayer = distanceBetween(unit.tilePos, nearestTarget->tilePos);
+                    if (nearestTarget->sprite.getColor() == sf::Color::Red) {
+                        nearestTarget->flashTimer += dt;
+                        if (nearestTarget->flashTimer >= 0.1f) {
+                            nearestTarget->sprite.setColor(sf::Color::White);
+                        }
+                    }
                     if (distToPlayer <= attackRange) {
                         attacked = true;
                         unit.attackTimer += dt;
                         if (unit.attackTimer >= 1.f) {
-                            std::cout << "enemy taking damage!" << std::endl;
+                            nearestTarget->sprite.setColor(sf::Color::Red);
+                            nearestTarget->flashTimer = 0.f;
                             nearestTarget->hp -= unit.damage;
                             unit.attackTimer = 0.f;
 
@@ -465,8 +513,6 @@ int main()
 
             // place queued units
             for (auto& building : placedBuildings) {
-                if (building.type != BuildingType::Farm) continue;
-
                 if (!building.buildQueue.empty()) {
                     auto& task = building.buildQueue.front();
                     task.timeRemaining -= dt;
@@ -578,7 +624,13 @@ int main()
         if (selectedBuildingIndex != -1 && placedBuildings[selectedBuildingIndex].type == BuildingType::Farm &&
             !ghostSprite) {
             window.draw(trainButton);
-            window.draw(trainText);
+            window.draw(trainFarmerText);
+        }
+
+        if (selectedBuildingIndex != -1 && placedBuildings[selectedBuildingIndex].type == BuildingType::Barracks &&
+            !ghostSprite) {
+            window.draw(trainButton);
+            window.draw(trainSoldierText);
         }
 
         if (gameOver) {

@@ -4,7 +4,7 @@
 #include <iostream>
 
 Unit::Unit(UnitType type, const sf::Texture& texture, sf::Vector2i startTile)
-    : tilePos(startTile), targetTile(startTile), speed(40.f), type(type), sprite(texture)
+    : tilePos(startTile), targetTile(startTile), type(type), sprite(texture)
 {
     sprite.setTextureRect(getUnitRect(type, 16));
     sprite.setPosition({ startTile.x * 16.f, startTile.y * 16.f }); // adjust for tile size
@@ -37,6 +37,8 @@ sf::IntRect getUnitRect(UnitType type, int tileSize) {
     switch (type) {
     case UnitType::Farmer:
         return sf::IntRect({ 17 * tileSize, 7 * tileSize }, { tileSize, tileSize });
+    case UnitType::Soldier:
+        return sf::IntRect({ 16 * tileSize, 7 * tileSize }, { tileSize, tileSize });
     case UnitType::EnemySoldier:
         return sf::IntRect({ 16 * tileSize, 8 * tileSize }, { tileSize, tileSize });
     default:
